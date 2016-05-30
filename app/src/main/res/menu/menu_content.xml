@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/page_index"
+            android:icon="@mipmap/menu_home"
+            android:title="  首页" />
+
+        <item
+            android:id="@+id/page_psychology"
+            android:icon="@mipmap/ic_launcher"
+            android:title="日常心理学" />
+
+        <item
+            android:id="@+id/page_movie"
+            android:icon="@mipmap/ic_launcher"
+            android:title="电影日报" />
+        <item
+            android:id="@+id/page_bored"
+            android:icon="@mipmap/ic_launcher"
+            android:title="不许无聊" />
+        <item
+            android:id="@+id/page_design"
+            android:icon="@mipmap/ic_launcher"
+            android:title="设计日报" />
+        <item
+            android:id="@+id/page_company"
+            android:icon="@mipmap/ic_launcher"
+            android:title="大公司日报" />
+        <item
+            android:id="@+id/page_finance"
+            android:icon="@mipmap/ic_launcher"
+            android:title="财经日报" />
+    </group>
+
+</menu>
