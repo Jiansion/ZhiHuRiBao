@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,7 +37,7 @@ import butterknife.ButterKnife;
 /**
  * Created by jiansion on 2016/5/28.
  */
-public class WebContentActivity extends AppCompatActivity {
+public class WebContentActivity extends BaseActivity {
 
 
     @Bind(R.id.mToolbar)
@@ -71,7 +70,6 @@ public class WebContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_webcontent);
-
         ButterKnife.bind(this);
         initToolBar();
         Intent intent = getIntent();

@@ -1,13 +1,10 @@
 package com.f8boss.zhihuribao.activity;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,11 +16,13 @@ import android.widget.Toast;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.fragment.FragmentIndext;
+import com.f8boss.zhihuribao.fragment.FragmentPsychology;
+import com.f8boss.zhihuribao.util.LogUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     @Bind(R.id.mToolbar)
@@ -40,17 +39,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentIndext fragmentIndext;
 
+    private FragmentPsychology fragementPsycholgy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        LogUtil.e("MainActivity", "主Activity");
         initBar();
         initHeaderView();
         initMenu();
         initIndext();
-
     }
+
 
     private void initIndext() {
         fragmentIndext = new FragmentIndext();
@@ -84,8 +87,18 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.page_index:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragmentIndext);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragmentIndext).commit();
                         break;
+
+                    case R.id.page_psychology:
+                        if (fragementPsycholgy == null) {
+                            fragementPsycholgy = new FragmentPsychology();
+                        }
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragementPsycholgy).commit();
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragementPsycholgy);
+
+                        break;
+
                 }
 
 
