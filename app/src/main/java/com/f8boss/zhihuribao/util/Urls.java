@@ -17,4 +17,7 @@ public class Urls {
     //其他的栏目 13为:日常心理学   12:为用户推荐  2:为开始游戏 9:为动漫那日报 3:电影日报
     public static final String THEM = "http://news-at.zhihu.com/api/4/theme/$";
 
+    //获取某栏目的过往消息,其中为栏目Id,#为列表中最后一项Itme的Id
+    public static final String THEM_BEFORE = "https://news-at.zhihu.com/api/4/theme/$/before/#";
+
 }

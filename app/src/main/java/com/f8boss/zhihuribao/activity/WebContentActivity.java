@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -20,11 +21,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.util.ImageLoaderUtil;
+import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.OkHttpUtils;
 import com.f8boss.zhihuribao.util.Urls;
 
@@ -54,6 +57,8 @@ public class WebContentActivity extends BaseActivity {
     TextView tvImageSoure;
     @Bind(R.id.imageHeader)
     ImageView imageHeader;
+    @Bind(R.id.relativeHeader)
+    RelativeLayout relativeHeader;
 
 
     private String TAG = "WebContentActivity";
@@ -63,7 +68,7 @@ public class WebContentActivity extends BaseActivity {
     //    public String cssurl;
     private String share_url;
     private String image_source;
-    private String title;
+    private String title = "null";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,19 +101,24 @@ public class WebContentActivity extends BaseActivity {
             @Override
             public void callBackUIString(String data) {
                 try {
+                    LogUtil.e(TAG, data);
                     JSONObject jsonObject = new JSONObject(data);
 //                    cssurl = jsonObject.getJSONArray("css").getString(0);
                     body = jsonObject.getString("body");
+
+                    share_url = jsonObject.getString("share_url");
+
                     imageUrl = jsonObject.getString("image");
                     title = jsonObject.getString("title");
                     image_source = jsonObject.getString("image_source");
-                    share_url = jsonObject.getString("share_url");
-
-//                    Log.e(TAG, "callBackUIString: " + cssurl);
                     setViewData();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    LogUtil.e(TAG, e.toString());
+                    relativeHeader.setVisibility(View.GONE);
+                    setOtherViewData();
                 }
 
             }
@@ -121,6 +131,23 @@ public class WebContentActivity extends BaseActivity {
 
     }
 
+    //没有头部图片的WEB加载
+    private void setOtherViewData() {
+        LogUtil.e(TAG, "进来到其他的吗?");
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html>\n")
+                .append("<link rel=\"stylesheet\" type=\"text/css\" href=").append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
+                .append(">\n")
+                .append("<body>\n")
+                .append(body)
+                .append("</body>")
+                .append("</html>");
+        String html = String.valueOf(sb);
+        mWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+    }
+
+
+    //带有头部图片的WEB加载
     private void setViewData() {
         String html = toGetStyle();
         ImageLoaderUtil.displayImage(imageUrl, imageHeader);

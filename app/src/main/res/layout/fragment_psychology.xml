@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.f8boss.zhihuribao.widget.BorderScrollView
         android:id="@+id/mBorderScrollView"
         android:layout_width="match_parent"
@@ -40,23 +39,30 @@
             </RelativeLayout>
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/linearEditor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relativeImage"
                 android:layout_margin="10dp"
                 android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
                 android:padding="3dp">
 
                 <TextView
+                    android:id="@+id/text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="主编" />
 
-            </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/mRecyclerIcon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@+id/text" />
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/mRecyclerView"

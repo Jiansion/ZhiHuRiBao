@@ -1,14 +1,17 @@
 package com.f8boss.zhihuribao.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
+import com.f8boss.zhihuribao.activity.WebContentActivity;
 import com.f8boss.zhihuribao.bean.ThemBean;
 import com.f8boss.zhihuribao.util.ImageLoaderUtil;
 
@@ -35,7 +38,7 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
         ThemBean.StoriesBean storiesBean = mList.get(position);
         holder.tvTitle.setText(storiesBean.getTitle());
@@ -49,6 +52,13 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
             holder.imageContentIcon.setVisibility(View.GONE);
         }
 
+        holder.linearDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WebContentActivity.startAction(context, mList.get(position).getId() + "");
+            }
+        });
+
 
     }
 
@@ -61,12 +71,15 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
 
         private TextView tvTitle;
         private ImageView imageContentIcon;
+        private LinearLayout linearDown;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            tvTitle.setTextColor(Color.BLACK);
             imageContentIcon = (ImageView) itemView.findViewById(R.id.imageContentIcon);
+            linearDown = (LinearLayout) itemView.findViewById(R.id.linearDown);
 
         }
     }

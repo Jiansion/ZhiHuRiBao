@@ -24,6 +24,7 @@
 
         <activity android:name=".activity.WebContentActivity" />
 
+        <activity android:name=".activity.EditWebActivity" />
     </application>
 
 </manifest>

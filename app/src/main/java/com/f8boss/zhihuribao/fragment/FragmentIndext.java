@@ -5,24 +5,17 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.f8boss.zhihuribao.R;
-
 import com.f8boss.zhihuribao.activity.WebContentActivity;
 import com.f8boss.zhihuribao.bean.IndextItemBean;
-import com.f8boss.zhihuribao.util.DateUtil;
 import com.f8boss.zhihuribao.util.ImageLoaderUtil;
 import com.f8boss.zhihuribao.util.OkHttpUtils;
 import com.f8boss.zhihuribao.util.Urls;
@@ -33,7 +26,6 @@ import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -180,7 +172,7 @@ public class FragmentIndext extends BaseFragment {
 
             @Override
             public void callBackUIString(String data) {
-//                Log.e(TAG, "callBackUIString: " + data);
+
                 IndextItemBean indextItemBean = gson.fromJson(data, IndextItemBean.class);
                 String date = indextItemBean.getDate();
                 beforeData = new Integer(date);
@@ -207,11 +199,6 @@ public class FragmentIndext extends BaseFragment {
 
             }
         });
-    }
-
-
-    private void downBeforeData() {
-
     }
 
 
