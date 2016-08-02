@@ -8,6 +8,7 @@ import android.view.ViewConfiguration;
 
 /**
  * Created by jiansion on 2016/5/29.
+ * 禁止滚动的NestedScrollView
  */
 public class NoNestedScrollView extends NestedScrollView {
     private int downX;

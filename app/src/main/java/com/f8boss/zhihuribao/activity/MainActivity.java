@@ -46,8 +46,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        LogUtil.e("MainActivity", "主Activity");
+        LogUtil.e(TAG, "主Activity");
         initBar();
         initHeaderView();
         initMenu();
@@ -95,7 +94,6 @@ public class MainActivity extends BaseActivity {
                             fragementPsycholgy = new FragmentPsychology();
                         }
                         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragementPsycholgy).commit();
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragementPsycholgy);
 
                         break;
 
@@ -124,13 +122,13 @@ public class MainActivity extends BaseActivity {
         tvDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "离线下载", Toast.LENGTH_SHORT).show();
+                showToast("离线下载");
             }
         });
         tvCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "收藏的", Toast.LENGTH_SHORT).show();
+                showToast("收藏");
             }
         });
 

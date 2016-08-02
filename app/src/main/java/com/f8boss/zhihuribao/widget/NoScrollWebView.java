@@ -7,6 +7,7 @@ import android.webkit.WebView;
 
 /**
  * Created by jiansion on 2016/5/28.
+ * 静止滚动的WebView
  */
 public class NoScrollWebView extends WebView {
     public NoScrollWebView(Context context) {

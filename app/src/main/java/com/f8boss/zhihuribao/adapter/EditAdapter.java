@@ -5,17 +5,19 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.f8boss.zhihuribao.MyApplication;
 import com.f8boss.zhihuribao.activity.EditWebActivity;
 import com.f8boss.zhihuribao.bean.ThemBean;
-import com.f8boss.zhihuribao.util.ImageLoaderUtil;
-import com.f8boss.zhihuribao.widget.CircleImageView;
+import com.f8boss.zhihuribao.util.LoaderImageUtil;
+
 
 import java.util.List;
 
 /**
  * Created by jiansion on 2016/6/1.
+ * 主编头像列表适配器
  */
 public class EditAdapter extends RecyclerView.Adapter<EditAdapter.ViewHolder> {
 
@@ -30,16 +32,15 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CircleImageView circleImageView = new CircleImageView(MyApplication.getInstance());
+        ImageView circleImageView = new ImageView(MyApplication.getInstance());
 
         return new ViewHolder(circleImageView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        ((CircleImageView) holder)
 
-        ImageLoaderUtil.displayImage(list.get(position).getAvatar(), ((CircleImageView) holder.itemView));
+        LoaderImageUtil.downCircleImage(MyApplication.getInstance(), list.get(position).getAvatar(), ((ImageView) holder.itemView));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

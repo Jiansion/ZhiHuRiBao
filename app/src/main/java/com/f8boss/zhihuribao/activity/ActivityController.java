@@ -16,13 +16,13 @@ public class ActivityController {
 
 
     //往集合中添加Avctivity；
-    public static void addActivity(AppCompatActivity activity) throws Exception {
+    public static void addActivity(AppCompatActivity activity) {
         activityList.add(activity);
     }
 
 
     //在集合中删除Activity
-    public static void removeActivity(AppCompatActivity activity) throws Exception {
+    public static void removeActivity(AppCompatActivity activity) {
         activityList.remove(activity);
     }
 

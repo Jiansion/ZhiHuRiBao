@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,22 +22,24 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.f8boss.zhihuribao.R;
-import com.f8boss.zhihuribao.util.ImageLoaderUtil;
+import com.f8boss.zhihuribao.util.LoaderImageUtil;
 import com.f8boss.zhihuribao.util.LogUtil;
-import com.f8boss.zhihuribao.util.OkHttpUtils;
 import com.f8boss.zhihuribao.util.Urls;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Call;
 
 /**
  * Created by jiansion on 2016/5/28.
+ * 详情页，内容展示
  */
 public class WebContentActivity extends BaseActivity {
 
@@ -65,7 +66,6 @@ public class WebContentActivity extends BaseActivity {
 
     private String body;
     private String imageUrl;
-    //    public String cssurl;
     private String share_url;
     private String image_source;
     private String title = "null";
@@ -79,7 +79,6 @@ public class WebContentActivity extends BaseActivity {
         initToolBar();
         Intent intent = getIntent();
         String id = intent.getStringExtra("Id");
-        Log.e(TAG, "onCreate: " + id);
         initWebView();
         downLoadContent(id);
     }
@@ -89,46 +88,38 @@ public class WebContentActivity extends BaseActivity {
         mCollapsingToobarLayout.setTitle(" ");
         mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.TRANSPARENT);
         mToolbar.setNavigationIcon(R.mipmap.back);
-//        mToolbar.setTitle(" ");
-//        mToolbar.setTitleTextColor(Color.TRANSPARENT);
     }
 
     private void downLoadContent(String id) {
+        OkHttpUtils.get()
+                .url(Urls.NEWCONTENT + id)
+                .tag(this)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
 
-        OkHttpUtils.onGetToDownLoadData(this, Urls.NEWCONTENT + id, OkHttpUtils.TYPE_TEXT, new OkHttpUtils.OnCallBack() {
+                    }
 
-
-            @Override
-            public void callBackUIString(String data) {
-                try {
-                    LogUtil.e(TAG, data);
-                    JSONObject jsonObject = new JSONObject(data);
-//                    cssurl = jsonObject.getJSONArray("css").getString(0);
-                    body = jsonObject.getString("body");
-
-                    share_url = jsonObject.getString("share_url");
-
-                    imageUrl = jsonObject.getString("image");
-                    title = jsonObject.getString("title");
-                    image_source = jsonObject.getString("image_source");
-                    setViewData();
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    LogUtil.e(TAG, e.toString());
-                    relativeHeader.setVisibility(View.GONE);
-                    setOtherViewData();
-                }
-
-            }
-
-            @Override
-            public void callBackUIByte(byte[] datas) {
-
-            }
-        });
-
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtil.e(TAG, response);
+                            JSONObject jsonObject = new JSONObject(response);
+                            body = jsonObject.getString("body");
+                            share_url = jsonObject.getString("share_url");
+                            imageUrl = jsonObject.getString("image");
+                            title = jsonObject.getString("title");
+                            image_source = jsonObject.getString("image_source");
+                            setViewData();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            LogUtil.e(TAG, e.toString());
+                            relativeHeader.setVisibility(View.GONE);
+                            setOtherViewData();
+                        }
+                    }
+                });
     }
 
     //没有头部图片的WEB加载
@@ -150,7 +141,7 @@ public class WebContentActivity extends BaseActivity {
     //带有头部图片的WEB加载
     private void setViewData() {
         String html = toGetStyle();
-        ImageLoaderUtil.displayImage(imageUrl, imageHeader);
+        LoaderImageUtil.downLoadImage(mActivity, imageUrl, imageHeader);
         tvImageSoure.setText(image_source);
         tvImageSoure.setTextColor(Color.WHITE);
         tvTitle.setTextColor(Color.WHITE);
@@ -162,13 +153,6 @@ public class WebContentActivity extends BaseActivity {
     private void initWebView() {
         // 允许 WebView 进行缩放
         mWebView.getSettings().setSupportZoom(true);
-
-        //设置WebView屏幕自适应
-//        ViewGroup.LayoutParams layoutParams = mWebView.getLayoutParams();
-//        layoutParams.width = getResources().getDisplayMetrics().widthPixels;
-//        mWebView.setLayoutParams(layoutParams);
-
-//        mWebView.getSettings().setUseWideViewPort(true);
         //设置可以执行Js代码
         mWebView.getSettings().setJavaScriptEnabled(true);
 
@@ -208,18 +192,8 @@ public class WebContentActivity extends BaseActivity {
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                Toast.makeText(WebContentActivity.this, "页面加载出错", Toast.LENGTH_SHORT).show();
+                showToast("页面加载出错");
             }
-
-
-            //            @Override//页面加载完成后回调
-//            public void onPageFinished(WebView view, String url) {
-////                imageView.setVisibility(View.GONE);
-//                if (!mWebView.getSettings().getLoadsImagesAutomatically()) {
-//                    mWebView.getSettings().setLoadsImagesAutomatically(true);
-//                }
-//            }
-//
         });
 
 
@@ -243,7 +217,6 @@ public class WebContentActivity extends BaseActivity {
 
         // http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
         //file:///android_asset/zhihu.css
-
         sb.append("<html>\n")
                 .append("<link rel=\"stylesheet\" type=\"text/css\" href=").append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
                 .append(">\n")
@@ -280,7 +253,7 @@ public class WebContentActivity extends BaseActivity {
                 break;
             //点赞
             case R.id.action_praise:
-                Toast.makeText(WebContentActivity.this, "赞", Toast.LENGTH_SHORT).show();
+                showToast("赞");
                 break;
         }
 

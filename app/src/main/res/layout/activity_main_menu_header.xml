@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
-        <com.f8boss.zhihuribao.widget.CircleImageView
+        <ImageView
             android:id="@+id/image_header"
             android:layout_width="80dp"
             android:layout_height="80dp"

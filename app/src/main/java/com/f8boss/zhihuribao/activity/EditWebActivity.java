@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 
 /**
  * Created by jiansion on 2016/6/1.
+ * 主编主页
  */
 public class EditWebActivity extends BaseActivity {
 

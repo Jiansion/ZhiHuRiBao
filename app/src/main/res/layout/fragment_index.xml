@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mSwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.f8boss.zhihuribao.widget.BorderScrollView
-        android:id="@+id/mBorderScrollView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.jude.rollviewpager.RollPagerView
-                android:id="@+id/mRollPageView"
-                android:layout_width="match_parent"
-                android:layout_height="230dp"
-                app:rollviewpager_play_delay="4000" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:text="今日热闻"
-                android:textColor="@android:color/darker_gray" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/mRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
-        </LinearLayout>
-
-    </com.f8boss.zhihuribao.widget.BorderScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>
