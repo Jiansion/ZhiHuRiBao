@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.MyApplication;
@@ -25,6 +24,12 @@ import java.util.List;
  */
 public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHolder> {
 
+
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_NORMAL = 1;
+    private View mHeaderView;
+
+
     private Context context;
     private List<ThemBean.StoriesBean> mList;
 
@@ -33,40 +38,71 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
         this.mList = mList;
     }
 
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
+        notifyItemInserted(0);
+    }
+
+    public View getHeaderView() {
+        return mHeaderView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mHeaderView == null) {
+            return TYPE_NORMAL;
+        }
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_NORMAL;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderView != null && viewType == TYPE_HEADER) {
+            return new ViewHolder(mHeaderView);
+        }
         View view = LayoutInflater.from(context).inflate(R.layout.item_them, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-
-        ThemBean.StoriesBean storiesBean = mList.get(position);
-        holder.tvTitle.setText(storiesBean.getTitle());
-        List<String> images = storiesBean.getImages();
-        //先判断是否存在有Itme的图片，如果没有隐藏该图标
-        if (images != null) {
-            String imageUrl = images.get(0);
-            LoaderImageUtil.downLoadImage(MyApplication.getInstance(), imageUrl, holder.imageContentIcon);
-
-        } else {
-            holder.imageContentIcon.setVisibility(View.GONE);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_HEADER) {
+            return;
         }
-
-        holder.mCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WebContentActivity.startAction(context, mList.get(position).getId() + "");
+        final int pos = getRealPosition(holder);
+        final ThemBean.StoriesBean storiesBean = mList.get(pos);
+        if (holder instanceof ViewHolder) {
+            holder.tvTitle.setText(storiesBean.getTitle());
+            List<String> images = storiesBean.getImages();
+            //先判断是否存在有Itme的图片，如果没有隐藏该图标
+            if (images != null) {
+                String imageUrl = images.get(0);
+                holder.imageContentIcon.setVisibility(View.VISIBLE);
+                LoaderImageUtil.downLoadImage(MyApplication.getInstance(), imageUrl, "ThemImage", holder.imageContentIcon);
+            } else {
+                holder.imageContentIcon.setVisibility(View.GONE);
             }
-        });
 
+            holder.mCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WebContentActivity.startAction(context, storiesBean.getId() + "");
+                }
+            });
+        }
+    }
 
+    public int getRealPosition(RecyclerView.ViewHolder holder) {
+        int position = holder.getLayoutPosition();
+        return mHeaderView == null ? position : position - 1;
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mHeaderView == null ? mList.size() : mList.size() + 1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -78,6 +114,9 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
+            if (itemView == mHeaderView) {
+                return;
+            }
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             tvTitle.setTextColor(Color.BLACK);
             imageContentIcon = (ImageView) itemView.findViewById(R.id.imageContentIcon);

@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.fragment.FragmentIndext;

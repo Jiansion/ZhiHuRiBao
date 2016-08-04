@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
@@ -27,8 +28,10 @@ import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.util.LoaderImageUtil;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.Urls;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.cache.CacheMode;
+import com.lzy.okhttputils.callback.StringCallback;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +39,8 @@ import org.json.JSONObject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.Call;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by jiansion on 2016/5/28.
@@ -81,6 +86,7 @@ public class WebContentActivity extends BaseActivity {
         String id = intent.getStringExtra("Id");
         initWebView();
         downLoadContent(id);
+        LogUtil.e(TAG, Urls.NEWCONTENT + id);
     }
 
     private void initToolBar() {
@@ -91,21 +97,17 @@ public class WebContentActivity extends BaseActivity {
     }
 
     private void downLoadContent(String id) {
-        OkHttpUtils.get()
-                .url(Urls.NEWCONTENT + id)
+        OkHttpUtils
+                .get(Urls.NEWCONTENT + id)
                 .tag(this)
-                .build()
+                .cacheKey("news_" + id)
+                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
                         try {
-                            LogUtil.e(TAG, response);
-                            JSONObject jsonObject = new JSONObject(response);
+                            LogUtil.e(TAG, s);
+                            JSONObject jsonObject = new JSONObject(s);
                             body = jsonObject.getString("body");
                             share_url = jsonObject.getString("share_url");
                             imageUrl = jsonObject.getString("image");
@@ -289,5 +291,9 @@ public class WebContentActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkHttpUtils.getInstance().cancelTag(this);
+    }
 }

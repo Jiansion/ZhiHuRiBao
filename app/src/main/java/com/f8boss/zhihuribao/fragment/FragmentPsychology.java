@@ -2,12 +2,13 @@ package com.f8boss.zhihuribao.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,17 +20,20 @@ import com.f8boss.zhihuribao.util.LoaderImageUtil;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.f8boss.zhihuribao.util.Utils;
-import com.f8boss.zhihuribao.widget.BorderScrollView;
+import com.f8boss.zhihuribao.widget.RecycScrollListener;
 import com.google.gson.Gson;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.cache.CacheMode;
+import com.lzy.okhttputils.callback.StringCallback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import okhttp3.Call;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by jiansion on 2016/5/30.
@@ -39,24 +43,18 @@ public class FragmentPsychology extends BaseFragment {
 
     private String TAG = "FragmentPsychology";
 
-    @Bind(R.id.tvColumns)
-    TextView tvColumns; //栏目标题
 
-    @Bind(R.id.imageHeader)
-    ImageView imageHeader;  //栏目图片
+    private TextView tvColumns; //栏目标题
 
 
-    @Bind(R.id.linearEditor)
-    RelativeLayout linearEditor;
+    private ImageView imageHeader;  //栏目图片
 
-    @Bind(R.id.mRecyclerIcon)
-    RecyclerView mRecyclerIcon;
+
+    private RecyclerView mRecyclerIcon;//用于放置主编的头像列表
 
     @Bind(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.mBorderScrollView)
-    BorderScrollView mBorderScrollView;//外层的ScrollView,主要用于判断滚动到底部是加载跟多的数据
 
     @Bind(R.id.mSwipeRefreshLayout)
     SwipeRefreshLayout mSwipeRefreshLayout; //最外层的SwipeRefreshLayout,用于下拉刷新数据
@@ -79,11 +77,9 @@ public class FragmentPsychology extends BaseFragment {
     public void initViews(View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         initSwipeRefreshLayout();
-        initPaging();
-        url = Utils.getReplaceFormat(Urls.THEM, "$", "13");
         initObject();
-        LogUtil.e(TAG, url);
-        LogUtil.e(TAG, "进来了吗?");
+        initRecyclerView();
+        initHeaderView();
     }
 
     @Override
@@ -94,47 +90,56 @@ public class FragmentPsychology extends BaseFragment {
     }
 
     //分页
-    private void initPaging() {
-        mBorderScrollView.setOnBorderListener(new BorderScrollView.OnBorderListener() {
+    private void initRecyclerView() {
+
+        LinearLayoutManager manager = new LinearLayoutManager(mActivity);
+        mRecyclerView.setLayoutManager(manager);
+        themItmeAdapter = new ThemItmeAdapter(mActivity, mList);
+        mRecyclerView.setAdapter(themItmeAdapter);
+
+        mRecyclerView.addOnScrollListener(new RecycScrollListener() {
             @Override
             public void onBottom() {
-                if (isBottom) {
-                    int id = mList.get(mList.size() - 1).getId();
-                    String urls = url + "/before/" + id;
-                    loadLastData(urls);
-                }
+                int id = mList.get(mList.size() - 1).getId();
+                String urls = url + "/before/" + id;
+                loadLastData(urls);
             }
 
             @Override
-            public void onTop() {
+            public void onScrollIdle() {
+                Picasso.with(mActivity).resumeTag("ThemImage");
+            }
+
+            @Override
+            public void onScrollIn() {
+                Picasso.with(mActivity).pauseTag("ThemImage");
             }
         });
+
+
     }
+
 
     private void loadLastData(String urls) {
         OkHttpUtils
-                .get()
-                .url(urls)
+                .get(urls)
                 .tag(this)
-                .build()
+                .cacheKey("theme_13")
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.e(TAG, "loadLastData:" + response);
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+                        LogUtil.e(TAG, "loadLastData:" + s);
                         if (response.equals("{\"stories\":[]}")) {
                             Toast.makeText(mActivity, "已经没有跟多内容了", Toast.LENGTH_SHORT).show();
                             isBottom = false;
                             return;
                         }
-                        ThemBean themBean = gson.fromJson(response, ThemBean.class);
+                        ThemBean themBean = gson.fromJson(s, ThemBean.class);
                         mList.addAll(themBean.getStories());
                         themItmeAdapter.notifyDataSetChanged();
                     }
+
                 });
     }
 
@@ -142,20 +147,15 @@ public class FragmentPsychology extends BaseFragment {
     //下载最新数据
     private void downLoadFirstData() {
         OkHttpUtils
-                .get()
-                .url(url)
+                .get(url)
                 .tag(this)
-                .build()
+                .cacheKey("theme_13_heade")
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.e(TAG, response);
-                        ThemBean themBean = gson.fromJson(response, ThemBean.class);
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+                        LogUtil.e(TAG, s);
+                        ThemBean themBean = gson.fromJson(s, ThemBean.class);
                         mList.addAll(themBean.getStories());
 
 
@@ -168,40 +168,36 @@ public class FragmentPsychology extends BaseFragment {
                         mRecyclerIcon.setAdapter(new EditAdapter(mActivity, editors));
                         LoaderImageUtil.downLoadImage(mActivity, image, imageHeader);
 
-
-                        if (themItmeAdapter == null) {
-                            themItmeAdapter = new ThemItmeAdapter(mActivity, mList);
-                            mRecyclerView.setAdapter(themItmeAdapter);
-                        } else {
-                            themItmeAdapter.notifyDataSetChanged();
-                        }
+                        themItmeAdapter.notifyDataSetChanged();
 
                     }
+
                 });
+    }
+
+    private void initObject() {
+        url = Utils.getReplaceFormat(Urls.THEM, "$", "13");
+        gson = new Gson();
+        mList = new ArrayList<>();
 
 
     }
 
-    private void initObject() {
-        gson = new Gson();
-        mList = new ArrayList<>();
-        LinearLayoutManager manager = new LinearLayoutManager(mActivity) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
-        mRecyclerView.setLayoutManager(manager);
-
-        LinearLayoutManager iconManage = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false) {
-            @Override
+    private void initHeaderView() {
+        //初始化头布局,并添加头布局
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.fragment_other_header, mRecyclerView, false);
+        mRecyclerIcon = (RecyclerView) view.findViewById(R.id.mRecyclerIcon);
+        imageHeader = (ImageView) view.findViewById(R.id.imageHeader);
+        tvColumns = (TextView) view.findViewById(R.id.tvColumns);
+        LinearLayoutManager iconManage = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false) {
+            @Override//设置布局管理器不能水平滚动
             public boolean canScrollHorizontally() {
                 return false;
             }
         };
         mRecyclerIcon.setLayoutManager(iconManage);
 
-
+        themItmeAdapter.setHeaderView(view);
     }
 
     private void initSwipeRefreshLayout() {
@@ -214,13 +210,14 @@ public class FragmentPsychology extends BaseFragment {
                 downLoadFirstData();
                 //更新结束
                 mSwipeRefreshLayout.setRefreshing(false);
-
-
             }
         });
 
-
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        OkHttpUtils.getInstance().cancelTag(this);
+    }
 }

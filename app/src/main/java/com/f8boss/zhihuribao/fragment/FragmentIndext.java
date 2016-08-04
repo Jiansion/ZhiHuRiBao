@@ -2,6 +2,7 @@ package com.f8boss.zhihuribao.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,19 +16,22 @@ import com.f8boss.zhihuribao.adapter.RollPageViewAdapter;
 import com.f8boss.zhihuribao.bean.IndextItemBean;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.Urls;
+import com.f8boss.zhihuribao.widget.RecycScrollListener;
 import com.google.gson.Gson;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.cache.CacheMode;
+import com.lzy.okhttputils.callback.StringCallback;
 import com.squareup.picasso.Picasso;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import okhttp3.Call;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by jiansion on 2016/5/25.
@@ -98,19 +102,15 @@ public class FragmentIndext extends BaseFragment {
     private void page() {
         LogUtil.e(TAG, "滑动到了底部");
         OkHttpUtils
-                .get()
-                .url(Urls.ZHIHUBEFORE + (beforeData - 1))
+                .get(Urls.ZHIHUBEFORE + (beforeData - 1))
                 .tag(this)
-                .build()
+                .cacheKey("beforeData")
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
 
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        IndextItemBean indextItemBean = gson.fromJson(response, IndextItemBean.class);
+                        IndextItemBean indextItemBean = gson.fromJson(s, IndextItemBean.class);
                         beforeData = new Integer(indextItemBean.getDate());
                         itemList.addAll(indextItemBean.getStories());
                         recyclerAdapter.notifyDataSetChanged();
@@ -125,30 +125,22 @@ public class FragmentIndext extends BaseFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecycScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                //当前RecyclerView显示出来的最后一个的item的position
-                int lastPosition = -1;
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    LogUtil.e(TAG, "滑动停止了");
-                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                    if (layoutManager instanceof LinearLayoutManager) {
-                        lastPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                    }
-                    //如果相等则说明已经滑动到最后了
-                    if (lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
-                        page();
-                        LogUtil.e(TAG, "滑动到了底部");
-                    }
-                    //滑动停止恢复加载图片
-                    Picasso.with(mActivity).resumeTag("indexImage");
-                } else {
-                    //列表滑动时停止加载图片
-                    Picasso.with(mActivity).pauseTag("indexImage");
-                }
+            public void onBottom() {
+                page();
+            }
+
+            @Override
+            public void onScrollIdle() {
+                //滑动停止恢复加载图片
+                Picasso.with(mActivity).resumeTag("indexImage");
+            }
+
+            @Override
+            public void onScrollIn() {
+                //列表滑动时停止加载图片
+                Picasso.with(mActivity).pauseTag("indexImage");
             }
         });
 
@@ -172,19 +164,14 @@ public class FragmentIndext extends BaseFragment {
     //下载首页的数据,或刷新数据
     private void downFirstData() {
         OkHttpUtils
-                .get()
-                .url(Urls.ZHIHUNEWS)
+                .get(Urls.ZHIHUNEWS)
                 .tag(this)
-                .build()
+                .cacheKey("latest")
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-
-                        IndextItemBean indextItemBean = gson.fromJson(response, IndextItemBean.class);
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+                        IndextItemBean indextItemBean = gson.fromJson(s, IndextItemBean.class);
                         String date = indextItemBean.getDate();
                         beforeData = new Integer(date);
                         itemList.clear();
@@ -198,8 +185,8 @@ public class FragmentIndext extends BaseFragment {
                             rollPageViewAdapter.notifyDataSetChanged();
                         }
                         recyclerAdapter.notifyDataSetChanged();
-
                     }
+
                 });
     }
 
