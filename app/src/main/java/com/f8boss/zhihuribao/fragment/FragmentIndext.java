@@ -102,7 +102,7 @@ public class FragmentIndext extends BaseFragment {
     private void page() {
         LogUtil.e(TAG, "滑动到了底部");
         OkHttpUtils
-                .get(Urls.ZHIHUBEFORE + (beforeData - 1))
+                .get(Urls.ZHIHU_BEFORE + (beforeData - 1))
                 .tag(this)
                 .cacheKey("beforeData")
                 .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)

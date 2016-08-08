@@ -15,8 +15,9 @@ import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.fragment.FragmentIndext;
-import com.f8boss.zhihuribao.fragment.FragmentPsychology;
+import com.f8boss.zhihuribao.fragment.ThemFragment;
 import com.f8boss.zhihuribao.util.LogUtil;
+import com.f8boss.zhihuribao.util.ThemType;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,7 +39,18 @@ public class MainActivity extends BaseActivity {
 
     private FragmentIndext fragmentIndext;
 
-    private FragmentPsychology fragementPsycholgy;
+    private ThemFragment psycholgyFragement;
+
+    private ThemFragment movieFragment;
+
+    private ThemFragment boredFragment;
+
+    private ThemFragment designFragment;
+
+    private ThemFragment companyFragment;
+
+    private ThemFragment financeFramgent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +81,6 @@ public class MainActivity extends BaseActivity {
     private void initMenu() {
 
         navigationMenu.addHeaderView(headerView);
-
-
         ViewGroup.LayoutParams layoutParams = navigationMenu.getLayoutParams();
         layoutParams.width = (getResources().getDisplayMetrics().widthPixels / 4) * 3;
         navigationMenu.setLayoutParams(layoutParams);
@@ -79,31 +89,53 @@ public class MainActivity extends BaseActivity {
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-
                 mToolbar.setTitle(item.getTitle().toString());
-
-
                 switch (item.getItemId()) {
                     case R.id.page_index:
                         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragmentIndext).commit();
                         break;
-
                     case R.id.page_psychology:
-                        if (fragementPsycholgy == null) {
-                            fragementPsycholgy = new FragmentPsychology();
+                        if (psycholgyFragement == null) {
+                            psycholgyFragement = new ThemFragment(ThemType.PAGE_PSYCHOLOGY);
                         }
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragementPsycholgy).commit();
-
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, psycholgyFragement).commit();
                         break;
-
+                    case R.id.page_movie://电影日报
+                        if (movieFragment == null) {
+                            movieFragment = new ThemFragment(ThemType.PAGE_MOVIE);
+                        }
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, movieFragment).commit();
+                        break;
+                    case R.id.page_bored://不许无聊日报
+                        if (boredFragment == null) {
+                            boredFragment = new ThemFragment(ThemType.PAGE_BORED);
+                        }
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, boredFragment).commit();
+                        break;
+                    case R.id.page_design:  //设计日报
+                        if (designFragment == null) {
+                            designFragment = new ThemFragment(ThemType.PAGE_DESIGN);
+                        }
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, designFragment).commit();
+                        break;
+                    case R.id.page_company://大公司日报
+                        if (companyFragment == null) {
+                            companyFragment = new ThemFragment(ThemType.PAGE_COMPANY);
+                        }
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, companyFragment).commit();
+                        break;
+                    case R.id.page_finance://财经日报
+                        if (financeFramgent == null) {
+                            financeFramgent = new ThemFragment(ThemType.PAGE_FINANCE);
+                        }
+                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, financeFramgent).commit();
+                        break;
                 }
-
 
                 //如果抽屉打开则关闭
                 if (mDrawerLayout.isDrawerOpen(navigationMenu)) {
                     mDrawerLayout.closeDrawer(navigationMenu);
                 }
-
                 return true;
             }
         });
@@ -145,7 +177,6 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

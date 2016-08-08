@@ -20,6 +20,7 @@
                 android:id="@+id/relativeHeader"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
+                android:layout_marginTop="60dp"
                 android:background="@android:color/transparent"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.5">
@@ -58,15 +59,15 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <com.f8boss.zhihuribao.widget.NoNestedScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <WebView
+        <com.f8boss.zhihuribao.widget.NoScrollWebView
             android:id="@+id/mWebView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.f8boss.zhihuribao.widget.NoNestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

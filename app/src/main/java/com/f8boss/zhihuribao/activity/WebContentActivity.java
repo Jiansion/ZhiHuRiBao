@@ -13,8 +13,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -28,17 +26,16 @@ import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.util.LoaderImageUtil;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.Urls;
+import com.f8boss.zhihuribao.widget.NoScrollWebView;
 import com.lzy.okhttputils.OkHttpUtils;
 import com.lzy.okhttputils.cache.CacheMode;
 import com.lzy.okhttputils.callback.StringCallback;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -47,8 +44,6 @@ import okhttp3.Response;
  * 详情页，内容展示
  */
 public class WebContentActivity extends BaseActivity {
-
-
     @Bind(R.id.mToolbar)
     Toolbar mToolbar;
     @Bind(R.id.mCollapsingToobarLayout)
@@ -56,7 +51,7 @@ public class WebContentActivity extends BaseActivity {
     @Bind(R.id.mAppBarLayout)
     AppBarLayout mAppBarLayout;
     @Bind(R.id.mWebView)
-    WebView mWebView;
+    NoScrollWebView mWebView;
     @Bind(R.id.tvTitle)
     TextView tvTitle;
     @Bind(R.id.tvImageSoure)
@@ -78,7 +73,6 @@ public class WebContentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_webcontent);
         ButterKnife.bind(this);
         initToolBar();
@@ -86,7 +80,7 @@ public class WebContentActivity extends BaseActivity {
         String id = intent.getStringExtra("Id");
         initWebView();
         downLoadContent(id);
-        LogUtil.e(TAG, Urls.NEWCONTENT + id);
+        LogUtil.e(TAG, Urls.NEW_CONTENT + id);
     }
 
     private void initToolBar() {
@@ -94,11 +88,13 @@ public class WebContentActivity extends BaseActivity {
         mCollapsingToobarLayout.setTitle(" ");
         mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.TRANSPARENT);
         mToolbar.setNavigationIcon(R.mipmap.back);
+//        mToolbar.setTitle(" ");
+//        mToolbar.setSubtitle(" ");
     }
 
     private void downLoadContent(String id) {
         OkHttpUtils
-                .get(Urls.NEWCONTENT + id)
+                .get(Urls.NEW_CONTENT + id)
                 .tag(this)
                 .cacheKey("news_" + id)
                 .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
@@ -129,7 +125,9 @@ public class WebContentActivity extends BaseActivity {
         LogUtil.e(TAG, "进来到其他的吗?");
         StringBuilder sb = new StringBuilder();
         sb.append("<html>\n")
-                .append("<link rel=\"stylesheet\" type=\"text/css\" href=").append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
+                .append("<link rel=\"stylesheet\" type=\"text/css\" href=")
+                .append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
+//                .append("file:///android_asset/zhihu.css")
                 .append(">\n")
                 .append("<body>\n")
                 .append(body)
@@ -174,16 +172,6 @@ public class WebContentActivity extends BaseActivity {
         }
 
 
-        //设置WebView 的进度条
-        mWebView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int progress) {
-                // Activities and WebViews measure progress with different scales.
-                // The progress meter will automatically disappear when we reach 100%
-                WebContentActivity.this.setProgress(progress * 1000);
-            }
-        });
-
-
         //防止点中WebView中的链接是使用系统浏览器访问
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
@@ -197,7 +185,6 @@ public class WebContentActivity extends BaseActivity {
                 showToast("页面加载出错");
             }
         });
-
 
     }
 
@@ -220,7 +207,9 @@ public class WebContentActivity extends BaseActivity {
         // http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
         //file:///android_asset/zhihu.css
         sb.append("<html>\n")
-                .append("<link rel=\"stylesheet\" type=\"text/css\" href=").append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
+                .append("<link rel=\"stylesheet\" type=\"text/css\" href=")
+                .append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
+//                .append("file:///android_asset/zhihu.css")
                 .append(">\n")
                 .append("<body>\n")
                 .append(body)

@@ -1,5 +1,6 @@
 package com.f8boss.zhihuribao.fragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,34 +40,28 @@ import okhttp3.Response;
  * Created by jiansion on 2016/5/30.
  * 日常心理学
  */
-public class FragmentPsychology extends BaseFragment {
-
-    private String TAG = "FragmentPsychology";
-
-
+public class ThemFragment extends BaseFragment {
     private TextView tvColumns; //栏目标题
-
-
     private ImageView imageHeader;  //栏目图片
-
-
     private RecyclerView mRecyclerIcon;//用于放置主编的头像列表
-
     @Bind(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
-
-
     @Bind(R.id.mSwipeRefreshLayout)
     SwipeRefreshLayout mSwipeRefreshLayout; //最外层的SwipeRefreshLayout,用于下拉刷新数据
-
     private ThemItmeAdapter themItmeAdapter;
-
     private Boolean isBottom = true;
-
     private String url;
-
     private Gson gson;
     private List<ThemBean.StoriesBean> mList;
+    private String TAG = "ThemFragment";
+
+    private String type;
+
+
+    @SuppressLint("ValidFragment")
+    public ThemFragment(String type) {
+        this.type = type;
+    }
 
     @Override
     protected int getLayoutId() {
@@ -86,7 +81,6 @@ public class FragmentPsychology extends BaseFragment {
     public void initData(Bundle savedInstanceState) {
         //下载初次数据
         downLoadFirstData();
-
     }
 
     //分页
@@ -100,9 +94,11 @@ public class FragmentPsychology extends BaseFragment {
         mRecyclerView.addOnScrollListener(new RecycScrollListener() {
             @Override
             public void onBottom() {
-                int id = mList.get(mList.size() - 1).getId();
-                String urls = url + "/before/" + id;
-                loadLastData(urls);
+                if (isBottom) {
+                    int id = mList.get(mList.size() - 1).getId();
+                    String urls = url + "/before/" + id;
+                    loadLastData(urls);
+                }
             }
 
             @Override
@@ -124,7 +120,7 @@ public class FragmentPsychology extends BaseFragment {
         OkHttpUtils
                 .get(urls)
                 .tag(this)
-                .cacheKey("theme_13")
+//                .cacheKey("theme_13")
                 .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
@@ -149,7 +145,7 @@ public class FragmentPsychology extends BaseFragment {
         OkHttpUtils
                 .get(url)
                 .tag(this)
-                .cacheKey("theme_13_heade")
+//                .cacheKey("theme_13_heade")
                 .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                 .execute(new StringCallback() {
                     @Override
@@ -158,16 +154,12 @@ public class FragmentPsychology extends BaseFragment {
                         ThemBean themBean = gson.fromJson(s, ThemBean.class);
                         mList.addAll(themBean.getStories());
 
-
-                        String background = themBean.getBackground();
-                        String image_source = themBean.getImage_source();
-
+                        String description = themBean.getDescription();
+                        tvColumns.setText(description);
                         String image = themBean.getImage();
-
                         List<ThemBean.EditorsBean> editors = themBean.getEditors();
                         mRecyclerIcon.setAdapter(new EditAdapter(mActivity, editors));
                         LoaderImageUtil.downLoadImage(mActivity, image, imageHeader);
-
                         themItmeAdapter.notifyDataSetChanged();
 
                     }
@@ -176,11 +168,9 @@ public class FragmentPsychology extends BaseFragment {
     }
 
     private void initObject() {
-        url = Utils.getReplaceFormat(Urls.THEM, "$", "13");
+        url = Utils.getReplaceFormat(Urls.THEM, "$", type);
         gson = new Gson();
         mList = new ArrayList<>();
-
-
     }
 
     private void initHeaderView() {
