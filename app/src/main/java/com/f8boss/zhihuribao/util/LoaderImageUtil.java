@@ -130,8 +130,8 @@ public class LoaderImageUtil {
         Picasso.with(context)
                 .load(url)
                 .config(Bitmap.Config.RGB_565)
-                .placeholder(R.mipmap.ic_launcher)  //图片占位符
-                .error(R.mipmap.ic_launcher)    //图片加载失败是加载的图片
+                .placeholder(R.mipmap.account_avatar)  //图片占位符
+                .error(R.mipmap.account_avatar)    //图片加载失败是加载的图片
                 .tag(tag)
                 .into(imageView);
     }

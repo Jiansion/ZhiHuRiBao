@@ -28,4 +28,7 @@ public class Urls {
     public static final String SPLASH_IMAGEURL = "http://news-at.zhihu.com/api/4/start-image/1080*1776";
 
 
+    public static final String EDIT_PAGE="http://news-at.zhihu.com/api/4/editor/$/profile-page/android";
+
+
 }

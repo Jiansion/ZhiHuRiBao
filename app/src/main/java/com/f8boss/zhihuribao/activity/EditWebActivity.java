@@ -1,5 +1,7 @@
 package com.f8boss.zhihuribao.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +9,8 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.f8boss.zhihuribao.R;
+import com.f8boss.zhihuribao.util.Urls;
+import com.f8boss.zhihuribao.util.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,8 +20,6 @@ import butterknife.ButterKnife;
  * 主编主页
  */
 public class EditWebActivity extends BaseActivity {
-
-
     @Bind(R.id.mToolbar)
     Toolbar mToolbar;
     @Bind(R.id.webViewEdit)
@@ -26,16 +28,11 @@ public class EditWebActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_editweb);
         ButterKnife.bind(this);
-
         initToolbar();
-
-//        WebView view = new WebView(this);
-//        setContentView(view);
-        webViewEdit.loadUrl("http://news-at.zhihu.com/api/4/editor/79/profile-page/android");
-
+        String id = getIntent().getStringExtra("id");
+        webViewEdit.loadUrl(Utils.getReplaceFormat(Urls.EDIT_PAGE, "$", id));
     }
 
     private void initToolbar() {
@@ -44,17 +41,20 @@ public class EditWebActivity extends BaseActivity {
         mToolbar.setNavigationIcon(R.mipmap.back);
     }
 
+    public static void startEditActivity(Context mContext, String id) {
+        Intent intent = new Intent(mContext, EditWebActivity.class);
+        intent.putExtra("id", id);
+        mContext.startActivity(intent);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 }
