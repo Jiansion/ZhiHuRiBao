@@ -16,20 +16,22 @@ import java.io.File;
  */
 public class LoaderImageUtil {
 
+
+    //查看图片加载的来源，右上角为绿色的表示从本地加载，红色为网路加载，蓝色的为内存加载
+    // Picasso.with(context).setIndicatorsEnabled(true);
+    private static final boolean idDebug = true;
+
     /**
      * 加载普通图片/加载资产目录图片
+     * 加载资产目录图片
+     * Picasso.with(this).load("file:///android_asset/heart.png").into(iv_picasso);
      *
      * @param context   上下文
      * @param url       图片链接
      * @param imageView ImageView
      */
     public static void downLoadImage(Context context, String url, ImageView imageView) {
-        //加载资源图片
-        // Picasso.with(this).load(R.drawable.alipay).into(iv_picasso);
-        //加载资产目录图片
-        // Picasso.with(this).load("file:///android_asset/heart.png").into(iv_picasso);
-        //加载sd卡图片文件
-        // Picasso.with(this).load(new File("XXX")).into(iv_picasso);
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(url)
                 .config(Bitmap.Config.RGB_565)
@@ -40,12 +42,14 @@ public class LoaderImageUtil {
 
     /**
      * 加载资源文件
+     * // Picasso.with(this).load(R.drawable.alipay).into(iv_picasso);
      *
      * @param context   上下文
      * @param resources 图片资源
      * @param imageView ImageView
      */
     public static void downLoadImage(Context context, int resources, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(resources)
                 .into(imageView);
@@ -53,12 +57,14 @@ public class LoaderImageUtil {
 
     /**
      * 加载文件图片如SD卡中的图片
+     * Picasso.with(this).load(new File("XXX")).into(iv_picasso);
      *
      * @param context   上下文
      * @param file      文件
      * @param imageView ImageView
      */
     public static void downLoadImage(Context context, File file, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(file)
                 .config(Bitmap.Config.RGB_565)
@@ -74,6 +80,7 @@ public class LoaderImageUtil {
      * @param imageView ImageView
      */
     public static void downCircleImage(Context context, String url, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(url)
                 .placeholder(R.mipmap.ic_launcher)  //图片占位符
@@ -93,6 +100,7 @@ public class LoaderImageUtil {
      * @param margin    圆角的宽度，单位dp,margin is the board in dp
      */
     public static void downRoundImage(Context context, String url, ImageView imageView, int rodius, int margin) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(url)
                 .placeholder(R.mipmap.ic_launcher)  //图片占位符
@@ -127,7 +135,9 @@ public class LoaderImageUtil {
      *                  //
      */
     public static void downLoadImage(Context context, String url, Object tag, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
+                //  .setIndicatorsEnabled(true)
                 .load(url)
                 .config(Bitmap.Config.RGB_565)
                 .placeholder(R.mipmap.account_avatar)  //图片占位符
@@ -145,6 +155,7 @@ public class LoaderImageUtil {
      * @param imageView ImageView
      */
     public static void downBigImage(Context context, String url, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
                 .load(url)
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)

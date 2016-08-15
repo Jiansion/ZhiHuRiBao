@@ -24,11 +24,11 @@ public class Urls {
     public static final String THEM_CONTENT = "http://news-at.zhihu.com/api/4/story/";
 
 
-    //App闪屏页动画
+    //App闪屏页动画 1080*1776,,720*1184
     public static final String SPLASH_IMAGEURL = "http://news-at.zhihu.com/api/4/start-image/1080*1776";
 
-
-    public static final String EDIT_PAGE="http://news-at.zhihu.com/api/4/editor/$/profile-page/android";
+    //栏目主编的个人资料API
+    public static final String EDIT_PAGE = "http://news-at.zhihu.com/api/4/editor/$/profile-page/android";
 
 
 }

@@ -15,10 +15,18 @@ public abstract class RecycScrollListener extends RecyclerView.OnScrollListener 
      * layoutManager的类型（枚举）
      */
     public enum LAYOUT_MANAGER_TYPE {
-        LINEAR,
-        GRID,
-        STAGGERED_GRID
+        LINEAR, //LinearLayoutManager
+        GRID,   //GridLayoutManager
+        STAGGERED_GRID //StaggeredGridLayoutManager
     }
+
+
+//    private final static int Linear = 1;
+//
+//    private final static int grid = 2;
+//
+//    private final static int stagred_grid = 3;
+
 
     protected LAYOUT_MANAGER_TYPE layoutManagerType;
 
@@ -91,14 +99,23 @@ public abstract class RecycScrollListener extends RecyclerView.OnScrollListener 
 
 
     @Override
+    /**
+     * 列表滑动到底部
+     */
     public abstract void onBottom();
 
     @Override
+    /**
+     * 列表处于滑动状态
+     */
     public void onScrollIn() {
     }
 
 
     @Override
+    /**
+     * 列表处于静止状态
+     */
     public void onScrollIdle() {
     }
 

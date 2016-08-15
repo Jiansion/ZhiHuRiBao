@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
@@ -27,15 +26,12 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     @Bind(R.id.mToolbar)
     Toolbar mToolbar;
-    @Bind(R.id.frameLayout)
-    FrameLayout frameLayout;
     @Bind(R.id.navigation_menu)
     NavigationView navigationMenu;
     @Bind(R.id.mDrawerLayout)
     DrawerLayout mDrawerLayout;
 
     private View headerView;
-    private TextView tvCollect, tvDown, tvName;
 
     private FragmentIndext fragmentIndext;
 
@@ -144,9 +140,9 @@ public class MainActivity extends BaseActivity {
 
     private void initHeaderView() {
         headerView = LayoutInflater.from(this).inflate(R.layout.activity_main_menu_header, navigationMenu, false);
-        tvCollect = (TextView) headerView.findViewById(R.id.tvFavorite);
-        tvDown = (TextView) headerView.findViewById(R.id.tvDown);
-        tvName = (TextView) headerView.findViewById(R.id.tvName);
+        TextView  tvCollect = (TextView) headerView.findViewById(R.id.tvFavorite);
+        TextView tvDown = (TextView) headerView.findViewById(R.id.tvDown);
+        TextView tvName = (TextView) headerView.findViewById(R.id.tvName);
         tvName.setTextColor(Color.WHITE);
         tvCollect.setTextColor(Color.WHITE);
         tvDown.setTextColor(Color.WHITE);
