@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.activity.WebContentActivity;
 import com.f8boss.zhihuribao.bean.IndextItemBean;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             holder.tvTitle.setText(storiesBean.getTitle());
             holder.tvTitle.setTextColor(Color.BLACK);
             //带标记滑动图片
-            LoaderImageUtil.downLoadImage(mContext, storiesBean.getImages().get(0), "indexImage", holder.imageContentIcon);
+            PicassoUtil.downLoadImage(mContext, storiesBean.getImages().get(0), "indexImage", holder.imageContentIcon);
             holder.mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

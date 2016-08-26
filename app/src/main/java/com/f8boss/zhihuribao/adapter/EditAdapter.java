@@ -11,7 +11,7 @@ import com.f8boss.zhihuribao.MyApplication;
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.activity.EditWebActivity;
 import com.f8boss.zhihuribao.bean.ThemBean;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        LoaderImageUtil.downCircleImage(MyApplication.getInstance(), list.get(position).getAvatar(), holder.editImageView);
+        PicassoUtil.downCircleImage(MyApplication.getInstance(), list.get(position).getAvatar(), holder.editImageView);
         final int id = list.get(position).getId();
         holder.editImageView.setOnClickListener(new View.OnClickListener() {
             @Override

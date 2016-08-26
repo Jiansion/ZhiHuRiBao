@@ -1,14 +1,16 @@
 package com.f8boss.zhihuribao.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.f8boss.zhihuribao.MyApplication;
 import com.f8boss.zhihuribao.R;
+import com.f8boss.zhihuribao.util.BitmapUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.lzy.okhttputils.OkHttpUtils;
 import com.lzy.okhttputils.cache.CacheMode;
@@ -24,6 +26,7 @@ import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -43,6 +46,17 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         ButterKnife.bind(this);
         timer = new Timer();
         downLoadMessage();
@@ -50,8 +64,7 @@ public class SplashActivity extends BaseActivity {
 
     private void downLoadMessage() {
         OkHttpUtils.get(Urls.SPLASH_IMAGEURL)
-                .cacheKey("SPLASH_IMAGEURL")
-                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                .cacheMode(CacheMode.NO_CACHE)
                 .tag(this)
                 .execute(new StringCallback() {
                     @Override
@@ -60,21 +73,17 @@ public class SplashActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(s);
                             String imageUrl = jsonObject.getString("img");
                             final String author = jsonObject.getString("text");
-
-                            Picasso.with(MyApplication.getInstance())
+                            Picasso.with(mActivity)
                                     .load(imageUrl)
                                     .into(splashImageView, new Callback() {
                                         @Override
                                         public void onSuccess() {
-                                            splashImageView.setVisibility(View.VISIBLE);
                                             tvAuthor.setText(author);
                                             jumpActivity();
                                         }
 
                                         @Override
                                         public void onError() {
-                                            splashImageView.setVisibility(View.VISIBLE);
-                                            splashImageView.setImageResource(R.mipmap.ic_launcher);
                                             jumpActivity();
                                         }
                                     });
@@ -82,6 +91,12 @@ public class SplashActivity extends BaseActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onError(boolean isFromCache, Call call, Response response, Exception e) {
+                        super.onError(isFromCache, call, response, e);
+                        jumpActivity();
                     }
                 });
     }
@@ -100,8 +115,9 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                return false;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -114,5 +130,6 @@ public class SplashActivity extends BaseActivity {
             timer.cancel();
             timer = null;
         }
+        BitmapUtil.recycleImageView(splashImageView);
     }
 }

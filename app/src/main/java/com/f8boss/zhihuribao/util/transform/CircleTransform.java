@@ -1,4 +1,4 @@
-package com.f8boss.zhihuribao.util;
+package com.f8boss.zhihuribao.util.transform;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

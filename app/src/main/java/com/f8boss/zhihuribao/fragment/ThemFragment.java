@@ -17,7 +17,7 @@ import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.adapter.EditAdapter;
 import com.f8boss.zhihuribao.adapter.ThemItmeAdapter;
 import com.f8boss.zhihuribao.bean.ThemBean;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.f8boss.zhihuribao.util.Utils;
@@ -159,7 +159,7 @@ public class ThemFragment extends BaseFragment {
                         String image = themBean.getImage();
                         List<ThemBean.EditorsBean> editors = themBean.getEditors();
                         mRecyclerIcon.setAdapter(new EditAdapter(mActivity, editors));
-                        LoaderImageUtil.downLoadImage(mActivity, image, imageHeader);
+                        PicassoUtil.downLoadImage(mActivity, image, imageHeader);
                         themItmeAdapter.notifyDataSetChanged();
 
                     }

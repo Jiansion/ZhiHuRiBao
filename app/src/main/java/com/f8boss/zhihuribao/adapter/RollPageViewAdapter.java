@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.f8boss.zhihuribao.activity.WebContentActivity;
 import com.f8boss.zhihuribao.bean.IndextItemBean;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class RollPageViewAdapter extends StaticPagerAdapter {
         relativeLayout.addView(tvTitle, lP1);
 
         tvTitle.setText(list.get(position).getTitle());
-        LoaderImageUtil.downLoadImage(mContext, list.get(position).getImage(), imageView);
+        PicassoUtil.downLoadImage(mContext, list.get(position).getImage(), imageView);
 
 
         //事件点击处理

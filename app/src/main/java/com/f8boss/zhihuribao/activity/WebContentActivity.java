@@ -23,10 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.bean.StoryExtra;
 import com.f8boss.zhihuribao.util.LogUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 import com.f8boss.zhihuribao.util.Urls;
+import com.f8boss.zhihuribao.util.Utils;
 import com.f8boss.zhihuribao.widget.NoScrollWebView;
+import com.google.gson.Gson;
 import com.lzy.okhttputils.OkHttpUtils;
 import com.lzy.okhttputils.cache.CacheMode;
 import com.lzy.okhttputils.callback.StringCallback;
@@ -80,7 +83,26 @@ public class WebContentActivity extends BaseActivity {
         String id = intent.getStringExtra("Id");
         initWebView();
         downLoadContent(id);
+        downLoadExtra(id);
         LogUtil.e(TAG, Urls.NEW_CONTENT + id);
+    }
+
+    //获取对应新闻的额外信息，如评论数量，所获的『赞』的数量
+    private void downLoadExtra(String id) {
+
+        String url = Utils.getReplaceFormat(Urls.STORY_EXTRA, "$", id);
+        OkHttpUtils.get(url)
+                .tag(this)
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+                        LogUtil.e(TAG, s);
+                        Gson gson = new Gson();
+                        StoryExtra storyExtra = gson.fromJson(s, StoryExtra.class);
+                    }
+                });
+
     }
 
     private void initToolBar() {
@@ -88,8 +110,6 @@ public class WebContentActivity extends BaseActivity {
         mCollapsingToobarLayout.setTitle(" ");
         mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.TRANSPARENT);
         mToolbar.setNavigationIcon(R.mipmap.back);
-//        mToolbar.setTitle(" ");
-//        mToolbar.setSubtitle(" ");
     }
 
     private void downLoadContent(String id) {
@@ -141,7 +161,7 @@ public class WebContentActivity extends BaseActivity {
     //带有头部图片的WEB加载
     private void setViewData() {
         String html = toGetStyle();
-        LoaderImageUtil.downLoadImage(mActivity, imageUrl, imageHeader);
+        PicassoUtil.downLoadImage(mActivity, imageUrl, imageHeader);
         tvImageSoure.setText(image_source);
         tvImageSoure.setTextColor(Color.WHITE);
         tvTitle.setTextColor(Color.WHITE);

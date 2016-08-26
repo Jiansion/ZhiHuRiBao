@@ -14,7 +14,7 @@ import com.f8boss.zhihuribao.MyApplication;
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.activity.WebContentActivity;
 import com.f8boss.zhihuribao.bean.ThemBean;
-import com.f8boss.zhihuribao.util.LoaderImageUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
             if (images != null) {
                 String imageUrl = images.get(0);
                 holder.imageContentIcon.setVisibility(View.VISIBLE);
-                LoaderImageUtil.downLoadImage(MyApplication.getInstance(), imageUrl, "ThemImage", holder.imageContentIcon);
+                PicassoUtil.downLoadImage(MyApplication.getInstance(), imageUrl, "ThemImage", holder.imageContentIcon);
             } else {
                 holder.imageContentIcon.setVisibility(View.GONE);
             }

@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.f8boss.zhihuribao.R;
+import com.f8boss.zhihuribao.util.transform.CircleTransform;
+import com.f8boss.zhihuribao.util.transform.RoundedTransform;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -14,7 +16,7 @@ import java.io.File;
  * Created by jiansion on 2016/5/25.
  * 图片加载工具类
  */
-public class LoaderImageUtil {
+public class PicassoUtil {
 
 
     //查看图片加载的来源，右上角为绿色的表示从本地加载，红色为网路加载，蓝色的为内存加载
@@ -105,7 +107,7 @@ public class LoaderImageUtil {
                 .load(url)
                 .placeholder(R.mipmap.ic_launcher)  //图片占位符
                 .error(R.mipmap.ic_launcher)    //图片加载失败是加载的图片
-                .config(Bitmap.Config.RGB_565)
+                .config(Bitmap.Config.ARGB_8888)
                 .transform(new RoundedTransform(rodius, margin))
                 .into(imageView);
     }
@@ -137,7 +139,6 @@ public class LoaderImageUtil {
     public static void downLoadImage(Context context, String url, Object tag, ImageView imageView) {
         Picasso.with(context).setIndicatorsEnabled(idDebug);
         Picasso.with(context)
-                //  .setIndicatorsEnabled(true)
                 .load(url)
                 .config(Bitmap.Config.RGB_565)
                 .placeholder(R.mipmap.account_avatar)  //图片占位符
@@ -161,6 +162,27 @@ public class LoaderImageUtil {
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .placeholder(R.mipmap.ic_launcher)  //图片占位符
                 .error(R.mipmap.ic_launcher)    //图片加载失败是加载的图片
+                .into(imageView);
+    }
+
+
+    /**
+     * 裁剪图片
+     *
+     * @param context
+     * @param url
+     * @param width
+     * @param height
+     * @param imageView
+     */
+    public static void downCutImage(Context context, String url, int width, int height, ImageView imageView) {
+        Picasso.with(context).setIndicatorsEnabled(idDebug);
+        Picasso.with(context)
+                .load(url)
+                .resize(Utils.dpToPx(context, width), Utils.dpToPx(context, height))
+                .placeholder(R.mipmap.ic_launcher)  //图片占位符
+                .error(R.mipmap.account_avatar)    //图片加载失败是加载的图片
+                .config(Bitmap.Config.RGB_565)
                 .into(imageView);
     }
 

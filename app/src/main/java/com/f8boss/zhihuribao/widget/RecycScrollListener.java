@@ -20,14 +20,6 @@ public abstract class RecycScrollListener extends RecyclerView.OnScrollListener 
         STAGGERED_GRID //StaggeredGridLayoutManager
     }
 
-
-//    private final static int Linear = 1;
-//
-//    private final static int grid = 2;
-//
-//    private final static int stagred_grid = 3;
-
-
     protected LAYOUT_MANAGER_TYPE layoutManagerType;
 
     /**

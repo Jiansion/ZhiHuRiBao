@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity {
         initHeaderView();
         initMenu();
         initIndext();
+
     }
 
 
@@ -140,7 +141,7 @@ public class MainActivity extends BaseActivity {
 
     private void initHeaderView() {
         headerView = LayoutInflater.from(this).inflate(R.layout.activity_main_menu_header, navigationMenu, false);
-        TextView  tvCollect = (TextView) headerView.findViewById(R.id.tvFavorite);
+        TextView tvCollect = (TextView) headerView.findViewById(R.id.tvFavorite);
         TextView tvDown = (TextView) headerView.findViewById(R.id.tvDown);
         TextView tvName = (TextView) headerView.findViewById(R.id.tvName);
         tvName.setTextColor(Color.WHITE);

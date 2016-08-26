@@ -55,7 +55,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/color_primary"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:src="@mipmap/share" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:src="@mipmap/collect" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/comment"
+                        android:gravity="bottom"
+                        android:text="..."
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/tvPraie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp"
+                        android:drawableLeft="@mipmap/praise"
+                        android:gravity="bottom"
+                        android:text="..."
+                        android:textColor="@android:color/white" />
+
+                </RelativeLayout>
+
+
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

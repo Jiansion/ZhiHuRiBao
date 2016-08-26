@@ -2,6 +2,7 @@ package com.f8boss.zhihuribao.util;
 
 /**
  * Created by jiansion on 2016/5/25.
+ * 知乎URL
  */
 public class Urls {
 
@@ -29,6 +30,9 @@ public class Urls {
 
     //栏目主编的个人资料API
     public static final String EDIT_PAGE = "http://news-at.zhihu.com/api/4/editor/$/profile-page/android";
+
+    //输入新闻的ID，获取对应新闻的额外信息，如评论数量，所获的『赞』的数量
+    public static final String STORY_EXTRA ="http://news-at.zhihu.com/api/4/story-extra/$";
 
 
 }
