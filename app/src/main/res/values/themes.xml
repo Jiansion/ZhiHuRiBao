@@ -4,6 +4,7 @@
     <style name="AppTheme.MyThem">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!--<item name="titleTextColor">@android:color/white</item>-->
 
     </style>
 </resources>

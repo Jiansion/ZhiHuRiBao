@@ -7,46 +7,37 @@ package com.f8boss.zhihuribao.util;
 
 import android.util.Log;
 
+import com.f8boss.zhihuribao.BuildConfig;
+
 
 public class LogUtil {
 
-    public static final int VERBOSE = 1;
-    public static final int DEBUG = 2;
-    public static final int INFO = 3;
-    public static final int WARN = 4;
-    public static final int ERROR = 5;
-    public static final int NOTHING = 6;
-
-    public static final int LEVEL = VERBOSE;
+    private static final boolean DEBUG = BuildConfig.LOG_DEBUG;
 
     public static void v(String tag, String msg) {
-        if (LEVEL <= VERBOSE) {
+        if (DEBUG)
             Log.v(tag, msg);
-        }
     }
 
     public static void d(String tag, String msg) {
-        if (LEVEL <= DEBUG) {
+        if (DEBUG)
             Log.d(tag, msg);
-        }
     }
 
     public static void i(String tag, String msg) {
-        if (LEVEL <= INFO) {
+        if (DEBUG)
             Log.i(tag, msg);
-        }
+
     }
 
     public static void w(String tag, String msg) {
-        if (LEVEL <= WARN) {
+        if (DEBUG)
             Log.w(tag, msg);
-        }
     }
 
     public static void e(String tag, String msg) {
-        if (LEVEL <= ERROR) {
+        if (DEBUG)
             Log.e(tag, msg);
-        }
     }
 
 

@@ -22,7 +22,7 @@ import java.util.List;
  * Created by jiansion on 2016/5/31.
  * 各项栏目的Item的Adapter
  */
-public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHolder> {
+public class ThemItemAdapter extends RecyclerView.Adapter<ThemItemAdapter.ViewHolder> {
 
 
     public static final int TYPE_HEADER = 0;
@@ -33,7 +33,7 @@ public class ThemItmeAdapter extends RecyclerView.Adapter<ThemItmeAdapter.ViewHo
     private Context context;
     private List<ThemBean.StoriesBean> mList;
 
-    public ThemItmeAdapter(Context context, List<ThemBean.StoriesBean> mList) {
+    public ThemItemAdapter(Context context, List<ThemBean.StoriesBean> mList) {
         this.context = context;
         this.mList = mList;
     }

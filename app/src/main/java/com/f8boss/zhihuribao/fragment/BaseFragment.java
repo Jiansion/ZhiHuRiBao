@@ -1,5 +1,6 @@
 package com.f8boss.zhihuribao.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,19 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.f8boss.zhihuribao.activity.BaseActivity;
+import com.lzy.okhttputils.OkHttpUtils;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by jiansion on 2016/5/25.
  * 基类Fragment
  */
 public abstract class BaseFragment extends Fragment {
-    public BaseActivity mActivity;
+    protected BaseActivity mActivity;
+    protected Unbinder bind;
     private View view;
 
-    // fragment创建
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         mActivity = (BaseActivity) getActivity();
     }
 
@@ -28,6 +33,7 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
             view = LayoutInflater.from(mActivity).inflate(getLayoutId(), container, false);
+            bind = ButterKnife.bind(this, view);
             initViews(view, savedInstanceState);
         }
         return view;
@@ -39,6 +45,14 @@ public abstract class BaseFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData(savedInstanceState);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        bind.unbind();
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
     /**

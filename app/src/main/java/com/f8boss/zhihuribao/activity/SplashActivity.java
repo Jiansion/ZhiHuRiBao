@@ -3,20 +3,20 @@ package com.f8boss.zhihuribao.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.util.BitmapUtil;
+import com.f8boss.zhihuribao.util.PicassoUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.lzy.okhttputils.OkHttpUtils;
 import com.lzy.okhttputils.cache.CacheMode;
 import com.lzy.okhttputils.callback.StringCallback;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +24,7 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -36,16 +35,21 @@ import okhttp3.Response;
  */
 public class SplashActivity extends BaseActivity {
 
-    @Bind(R.id.splashImageView)
+    @BindView(R.id.splashImageView)
     ImageView splashImageView;
-    @Bind(R.id.tvAuthor)
+    @BindView(R.id.tvAuthor)
     TextView tvAuthor;
+    @BindView(R.id.linearBottom)
+    LinearLayout linearBottom;
     private Timer timer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+    protected int initLayoutId() {
+        return R.layout.activity_splash;
+    }
+
+    @Override
+    protected void initView() {
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -57,36 +61,29 @@ public class SplashActivity extends BaseActivity {
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void initData() {
         timer = new Timer();
         downLoadMessage();
     }
 
     private void downLoadMessage() {
         OkHttpUtils.get(Urls.SPLASH_IMAGEURL)
-                .cacheMode(CacheMode.NO_CACHE)
                 .tag(this)
+                .cacheTime(3600 * 1000 * 24)   //缓存时间为一天
+                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
                 .execute(new StringCallback() {
                     @Override
                     public void onResponse(boolean isFromCache, String s, Request request, Response response) {
+                        linearBottom.setVisibility(View.VISIBLE);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             String imageUrl = jsonObject.getString("img");
                             final String author = jsonObject.getString("text");
-                            Picasso.with(mActivity)
-                                    .load(imageUrl)
-                                    .into(splashImageView, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            tvAuthor.setText(author);
-                                            jumpActivity();
-                                        }
-
-                                        @Override
-                                        public void onError() {
-                                            jumpActivity();
-                                        }
-                                    });
+                            PicassoUtil.downLoadImage(mActivity, imageUrl, splashImageView);
+                            tvAuthor.setText(author);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -94,8 +91,8 @@ public class SplashActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(boolean isFromCache, Call call, Response response, Exception e) {
-                        super.onError(isFromCache, call, response, e);
+                    public void onAfter(boolean isFromCache, @Nullable String s, Call call, @Nullable Response response, @Nullable Exception e) {
+                        super.onAfter(isFromCache, s, call, response, e);
                         jumpActivity();
                     }
                 });
@@ -125,10 +122,8 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OkHttpUtils.getInstance().cancelTag(this);
         if (timer != null) {
             timer.cancel();
-            timer = null;
         }
         BitmapUtil.recycleImageView(splashImageView);
     }

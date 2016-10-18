@@ -1,9 +1,9 @@
 package com.f8boss.zhihuribao.activity;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -13,59 +13,61 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
-import com.f8boss.zhihuribao.fragment.FragmentIndext;
+import com.f8boss.zhihuribao.fragment.BaseFragment;
+import com.f8boss.zhihuribao.fragment.FragmentIndex;
 import com.f8boss.zhihuribao.fragment.ThemFragment;
-import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.ThemType;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import java.util.Map;
+
+import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String TAG = "MainActivity";
-    @Bind(R.id.mToolbar)
+    private static final String TAG = MainActivity.class.getName();
+
+    @BindView(R.id.mToolbar)
     Toolbar mToolbar;
-    @Bind(R.id.navigation_menu)
+    @BindView(R.id.navigation_menu)
     NavigationView navigationMenu;
-    @Bind(R.id.mDrawerLayout)
+    @BindView(R.id.mDrawerLayout)
     DrawerLayout mDrawerLayout;
 
     private View headerView;
 
-    private FragmentIndext fragmentIndext;
 
-    private ThemFragment psycholgyFragement;
+    private Map<String, BaseFragment> fragmentMap;
 
-    private ThemFragment movieFragment;
+    private String nowTag = "fragmentIndex";
 
-    private ThemFragment boredFragment;
-
-    private ThemFragment designFragment;
-
-    private ThemFragment companyFragment;
-
-    private ThemFragment financeFramgent;
+    private boolean isBack;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        LogUtil.e(TAG, "主Activity");
+    protected int initLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initView() {
         initBar();
         initHeaderView();
         initMenu();
-        initIndext();
+
 
     }
 
+    @Override
+    protected void initData() {
+        fragmentMap = new ArrayMap<>();
+        initIndexFragment();
+    }
 
-    private void initIndext() {
-        fragmentIndext = new FragmentIndext();
+    private void initIndexFragment() {
+        FragmentIndex fragmentIndex = new FragmentIndex();
+        fragmentMap.put("fragmentIndex", fragmentIndex);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout, fragmentIndext).commit();
+        transaction.replace(R.id.frameLayout, fragmentIndex).commit();
     }
 
     private void initBar() {
@@ -76,7 +78,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void initMenu() {
-
         navigationMenu.addHeaderView(headerView);
         ViewGroup.LayoutParams layoutParams = navigationMenu.getLayoutParams();
         layoutParams.width = (getResources().getDisplayMetrics().widthPixels / 4) * 3;
@@ -89,43 +90,25 @@ public class MainActivity extends BaseActivity {
                 mToolbar.setTitle(item.getTitle().toString());
                 switch (item.getItemId()) {
                     case R.id.page_index:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragmentIndext).commit();
+                        doReplaceFragment("fragmentIndex");
                         break;
-                    case R.id.page_psychology:
-                        if (psycholgyFragement == null) {
-                            psycholgyFragement = new ThemFragment(ThemType.PAGE_PSYCHOLOGY);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, psycholgyFragement).commit();
+                    case R.id.page_psychology://好奇心日报
+                        doReplaceFragment(ThemType.PAGE_PSYCHOLOGY);
                         break;
                     case R.id.page_movie://电影日报
-                        if (movieFragment == null) {
-                            movieFragment = new ThemFragment(ThemType.PAGE_MOVIE);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, movieFragment).commit();
+                        doReplaceFragment(ThemType.PAGE_MOVIE);
                         break;
                     case R.id.page_bored://不许无聊日报
-                        if (boredFragment == null) {
-                            boredFragment = new ThemFragment(ThemType.PAGE_BORED);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, boredFragment).commit();
+                        doReplaceFragment(ThemType.PAGE_BORED);
                         break;
                     case R.id.page_design:  //设计日报
-                        if (designFragment == null) {
-                            designFragment = new ThemFragment(ThemType.PAGE_DESIGN);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, designFragment).commit();
+                        doReplaceFragment(ThemType.PAGE_DESIGN);
                         break;
                     case R.id.page_company://大公司日报
-                        if (companyFragment == null) {
-                            companyFragment = new ThemFragment(ThemType.PAGE_COMPANY);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, companyFragment).commit();
+                        doReplaceFragment(ThemType.PAGE_COMPANY);
                         break;
                     case R.id.page_finance://财经日报
-                        if (financeFramgent == null) {
-                            financeFramgent = new ThemFragment(ThemType.PAGE_FINANCE);
-                        }
-                        getSupportFragmentManager().beginTransaction().addToBackStack("PAGE").replace(R.id.frameLayout, financeFramgent).commit();
+                        doReplaceFragment(ThemType.PAGE_FINANCE);
                         break;
                 }
 
@@ -135,11 +118,13 @@ public class MainActivity extends BaseActivity {
                 }
                 return true;
             }
+
         });
 
     }
 
     private void initHeaderView() {
+
         headerView = LayoutInflater.from(this).inflate(R.layout.activity_main_menu_header, navigationMenu, false);
         TextView tvCollect = (TextView) headerView.findViewById(R.id.tvFavorite);
         TextView tvDown = (TextView) headerView.findViewById(R.id.tvDown);
@@ -160,13 +145,35 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+    }
+
+
+    private void doReplaceFragment(String tag) {
+        if (!tag.equals(nowTag)) {
+            if (fragmentMap.get(tag) == null) {
+                ThemFragment fragment = new ThemFragment(tag);
+                fragmentMap.put(tag, fragment);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(fragmentMap.get(nowTag))
+                        .add(R.id.frameLayout, fragment, tag)
+                        .commit();
+
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(fragmentMap.get(nowTag))
+                        .show(fragmentMap.get(tag))
+                        .commit();
+            }
+            nowTag = tag;
+        }
 
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (!mDrawerLayout.isDrawerOpen(navigationMenu)) {
@@ -174,9 +181,22 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(navigationMenu)) {
+            mDrawerLayout.closeDrawer(navigationMenu);
+        } else {
+            if (isBack) {
+                super.onBackPressed();
+                ActivityController.finishAllActivity();
+                return;
+            }
+            isBack = true;
+            showToast("再按一次退出程序");
+        }
 
+    }
 }

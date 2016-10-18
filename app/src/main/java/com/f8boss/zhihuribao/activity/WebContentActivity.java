@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,12 +12,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,8 +35,7 @@ import com.lzy.okhttputils.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import butterknife.BindView;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -47,22 +44,24 @@ import okhttp3.Response;
  * 详情页，内容展示
  */
 public class WebContentActivity extends BaseActivity {
-    @Bind(R.id.mToolbar)
+    @BindView(R.id.mToolbar)
     Toolbar mToolbar;
-    @Bind(R.id.mCollapsingToobarLayout)
+    @BindView(R.id.mCollapsingToobarLayout)
     CollapsingToolbarLayout mCollapsingToobarLayout;
-    @Bind(R.id.mAppBarLayout)
+    @BindView(R.id.mAppBarLayout)
     AppBarLayout mAppBarLayout;
-    @Bind(R.id.mWebView)
+    @BindView(R.id.mWebView)
     NoScrollWebView mWebView;
-    @Bind(R.id.tvTitle)
-    TextView tvTitle;
-    @Bind(R.id.tvImageSoure)
+    @BindView(R.id.tvImageSoure)
     TextView tvImageSoure;
-    @Bind(R.id.imageHeader)
+    @BindView(R.id.imageHeader)
     ImageView imageHeader;
-    @Bind(R.id.relativeHeader)
+    @BindView(R.id.relativeHeader)
     RelativeLayout relativeHeader;
+    @BindView(R.id.tvTitle)
+    TextView tvTitle;
+    @BindView(R.id.webProgressBar)
+    ProgressBar webProgressBar;
 
 
     private String TAG = "WebContentActivity";
@@ -74,14 +73,20 @@ public class WebContentActivity extends BaseActivity {
     private String title = "null";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webcontent);
-        ButterKnife.bind(this);
+    protected int initLayoutId() {
+        return R.layout.activity_webcontent;
+    }
+
+    @Override
+    protected void initView() {
         initToolBar();
+        initWebView();
+    }
+
+    @Override
+    protected void initData() {
         Intent intent = getIntent();
         String id = intent.getStringExtra("Id");
-        initWebView();
         downLoadContent(id);
         downLoadExtra(id);
         LogUtil.e(TAG, Urls.NEW_CONTENT + id);
@@ -107,8 +112,12 @@ public class WebContentActivity extends BaseActivity {
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
+        mAppBarLayout.setExpanded(false);
         mCollapsingToobarLayout.setTitle(" ");
-        mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.TRANSPARENT);
+        //折叠的字体颜色颜色
+        mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        //展开的字体颜色
+        mCollapsingToobarLayout.setExpandedTitleColor(Color.WHITE);
         mToolbar.setNavigationIcon(R.mipmap.back);
     }
 
@@ -147,7 +156,7 @@ public class WebContentActivity extends BaseActivity {
         sb.append("<html>\n")
                 .append("<link rel=\"stylesheet\" type=\"text/css\" href=")
                 .append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
-//                .append("file:///android_asset/zhihu.css")
+//                .append("file:///android_asset/zhihu.html")
                 .append(">\n")
                 .append("<body>\n")
                 .append(body)
@@ -167,44 +176,58 @@ public class WebContentActivity extends BaseActivity {
         tvTitle.setTextColor(Color.WHITE);
         tvTitle.setText(title);
 
+
         mWebView.loadData(html, "text/html; charset=utf-8", "utf-8");
     }
 
     private void initWebView() {
         // 允许 WebView 进行缩放
-        mWebView.getSettings().setSupportZoom(true);
+        WebSettings settings = mWebView.getSettings();
+
         //设置可以执行Js代码
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setSupportZoom(true);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+            settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
         } else {
-            mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+            settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         }
 
 
         //优化WebView，使WebView页面加载出来后再加载图片
         if (Build.VERSION.SDK_INT >= 19) {
-            mWebView.getSettings().setLoadsImagesAutomatically(true);
+            settings.setLoadsImagesAutomatically(true);
         } else {
-            mWebView.getSettings().setLoadsImagesAutomatically(false);
+            settings.setLoadsImagesAutomatically(false);
         }
+
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                webProgressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    webProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
 
 
         //防止点中WebView中的链接是使用系统浏览器访问
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                mWebView.loadUrl(url);
-                return false;
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                showToast("页面加载出错");
-            }
-        });
+//        mWebView.setWebViewClient(new WebViewClient() {
+//            @Override
+//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                mWebView.loadUrl(url);
+//                return false;
+//            }
+//
+//            @Override
+//            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+//                showToast("页面加载出错");
+//            }
+//        });
 
     }
 
@@ -225,11 +248,11 @@ public class WebContentActivity extends BaseActivity {
         body = body.replace(s1, s2);
 
         // http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
-        //file:///android_asset/zhihu.css
+        //file:///android_asset/zhihu.html
         sb.append("<html>\n")
                 .append("<link rel=\"stylesheet\" type=\"text/css\" href=")
                 .append("http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3")
-//                .append("file:///android_asset/zhihu.css")
+//                .append("file:///android_asset/zhihu.html")
                 .append(">\n")
                 .append("<body>\n")
                 .append(body)
@@ -241,9 +264,9 @@ public class WebContentActivity extends BaseActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_web, menu);
-        return super.onCreateOptionsMenu(menu);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
