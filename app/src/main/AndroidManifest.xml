@@ -27,6 +27,8 @@
         <activity android:name=".activity.WebContentActivity" />
 
         <activity android:name=".activity.EditWebActivity" />
+
+        <activity android:name=".activity.ShowWebImageActivity" />
     </application>
 
 </manifest>

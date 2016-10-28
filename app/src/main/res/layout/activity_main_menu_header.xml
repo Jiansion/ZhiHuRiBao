@@ -42,12 +42,14 @@
         <TextView
             android:id="@+id/tvFavorite"
             style="@style/menu_text"
+            android:background="@drawable/water_bg"
             android:drawableLeft="@mipmap/favorites"
             android:text="我的收藏" />
 
         <TextView
             android:id="@+id/tvDown"
             style="@style/menu_text"
+            android:background="@drawable/water_bg"
             android:drawableLeft="@mipmap/download"
             android:text="离线下载" />
     </LinearLayout>

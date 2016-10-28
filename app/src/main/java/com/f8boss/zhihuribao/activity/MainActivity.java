@@ -17,6 +17,7 @@ import com.f8boss.zhihuribao.fragment.BaseFragment;
 import com.f8boss.zhihuribao.fragment.FragmentIndex;
 import com.f8boss.zhihuribao.fragment.ThemFragment;
 import com.f8boss.zhihuribao.util.ThemType;
+import com.f8boss.zhihuribao.util.ToastUtil;
 
 import java.util.Map;
 
@@ -135,13 +136,13 @@ public class MainActivity extends BaseActivity {
         tvDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("离线下载");
+                ToastUtil.showToast(mActivity,"离线下载");
             }
         });
         tvCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("收藏");
+                ToastUtil.showToast(mActivity,"收藏");
             }
         });
 
@@ -195,7 +196,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }
             isBack = true;
-            showToast("再按一次退出程序");
+            ToastUtil.showToast(mActivity,"再按一次退出程序");
         }
 
     }

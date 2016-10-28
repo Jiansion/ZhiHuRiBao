@@ -1,20 +1,18 @@
 package com.f8boss.zhihuribao.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -22,8 +20,10 @@ import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.bean.StoryExtra;
+import com.f8boss.zhihuribao.util.JSInterface;
 import com.f8boss.zhihuribao.util.LogUtil;
 import com.f8boss.zhihuribao.util.PicassoUtil;
+import com.f8boss.zhihuribao.util.ToastUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.f8boss.zhihuribao.util.Utils;
 import com.f8boss.zhihuribao.widget.NoScrollWebView;
@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -46,22 +47,33 @@ import okhttp3.Response;
 public class WebContentActivity extends BaseActivity {
     @BindView(R.id.mToolbar)
     Toolbar mToolbar;
-    @BindView(R.id.mCollapsingToobarLayout)
-    CollapsingToolbarLayout mCollapsingToobarLayout;
-    @BindView(R.id.mAppBarLayout)
-    AppBarLayout mAppBarLayout;
+
     @BindView(R.id.mWebView)
     NoScrollWebView mWebView;
+
     @BindView(R.id.tvImageSoure)
     TextView tvImageSoure;
+
     @BindView(R.id.imageHeader)
     ImageView imageHeader;
+
     @BindView(R.id.relativeHeader)
     RelativeLayout relativeHeader;
+
     @BindView(R.id.tvTitle)
     TextView tvTitle;
+
     @BindView(R.id.webProgressBar)
     ProgressBar webProgressBar;
+
+    @BindView(R.id.imageCollect)
+    ImageView imageCollect;
+
+    @BindView(R.id.tvComment)
+    TextView tvComment;
+
+    @BindView(R.id.tvPraise)
+    TextView tvPraise;
 
 
     private String TAG = "WebContentActivity";
@@ -74,6 +86,7 @@ public class WebContentActivity extends BaseActivity {
 
     @Override
     protected int initLayoutId() {
+        transparentBar();
         return R.layout.activity_webcontent;
     }
 
@@ -94,7 +107,6 @@ public class WebContentActivity extends BaseActivity {
 
     //获取对应新闻的额外信息，如评论数量，所获的『赞』的数量
     private void downLoadExtra(String id) {
-
         String url = Utils.getReplaceFormat(Urls.STORY_EXTRA, "$", id);
         OkHttpUtils.get(url)
                 .tag(this)
@@ -105,6 +117,8 @@ public class WebContentActivity extends BaseActivity {
                         LogUtil.e(TAG, s);
                         Gson gson = new Gson();
                         StoryExtra storyExtra = gson.fromJson(s, StoryExtra.class);
+                        tvComment.setText(String.valueOf(storyExtra.getComments()));
+                        tvPraise.setText(String.valueOf(storyExtra.getPopularity()));
                     }
                 });
 
@@ -112,13 +126,6 @@ public class WebContentActivity extends BaseActivity {
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        mAppBarLayout.setExpanded(false);
-        mCollapsingToobarLayout.setTitle(" ");
-        //折叠的字体颜色颜色
-        mCollapsingToobarLayout.setCollapsedTitleTextColor(Color.WHITE);
-        //展开的字体颜色
-        mCollapsingToobarLayout.setExpandedTitleColor(Color.WHITE);
-        mToolbar.setNavigationIcon(R.mipmap.back);
     }
 
     private void downLoadContent(String id) {
@@ -175,11 +182,10 @@ public class WebContentActivity extends BaseActivity {
         tvImageSoure.setTextColor(Color.WHITE);
         tvTitle.setTextColor(Color.WHITE);
         tvTitle.setText(title);
-
-
         mWebView.loadData(html, "text/html; charset=utf-8", "utf-8");
     }
 
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void initWebView() {
         // 允许 WebView 进行缩放
         WebSettings settings = mWebView.getSettings();
@@ -187,6 +193,8 @@ public class WebContentActivity extends BaseActivity {
         //设置可以执行Js代码
         settings.setJavaScriptEnabled(true);
         settings.setSupportZoom(true);
+        // 添加js交互接口类，并起别名 imagelistner
+        mWebView.addJavascriptInterface(new JSInterface(mActivity), "imagelistner");
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -215,27 +223,46 @@ public class WebContentActivity extends BaseActivity {
         });
 
 
-        //防止点中WebView中的链接是使用系统浏览器访问
-//        mWebView.setWebViewClient(new WebViewClient() {
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                mWebView.loadUrl(url);
-//                return false;
-//            }
-//
-//            @Override
-//            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-//                showToast("页面加载出错");
-//            }
-//        });
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                addImageClickListner();
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Uri uri = Uri.parse(url); //url为你要链接的地址
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+                return true;
+            }
+
+        });
 
     }
 
 
+    // 注入js函数监听
+    private void addImageClickListner() {
+        // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
+        mWebView.loadUrl("javascript:(function(){" +
+                "var objs = document.getElementsByTagName(\"img\"); " +
+                "for(var i=0;i<objs.length;i++)  " +
+                "{"
+                + "    objs[i].onclick=function()  " +
+                "    {  "
+                + "        window.imagelistner.openImage(this.src);  " +
+                "    }  " +
+                "}" +
+                "})()");
+    }
+
+
+    //设置网页样式
     private String toGetStyle() {
 
         StringBuilder sb = new StringBuilder();
-
 
         String s1 = "<div class=\"headline\">\n" +
                 "\n" +
@@ -263,59 +290,6 @@ public class WebContentActivity extends BaseActivity {
     }
 
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_web, menu);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                toGoback();
-                break;
-            //分享
-            case R.id.action_share:
-
-                break;
-            //收藏
-            case R.id.action_collect:
-                break;
-            //评论
-            case R.id.action_comment:
-                break;
-            //点赞
-            case R.id.action_praise:
-                showToast("赞");
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {// 按下回退键时,回到初始上一页
-            if (toGoback()) return true;
-
-        }
-        return false;
-    }
-
-    private boolean toGoback() {
-        // 判断 WebView 是否有历史记录
-        if (mWebView.canGoBack()) {
-            // 防止按回退键时直接退出
-            mWebView.goBack();
-            return true;
-        } else {
-            finish();
-        }
-        return false;
-    }
-
-
     //用于提供与其他Activity调用跳转到该Activity
     public static void startAction(Context context, String Id) {
         Intent intent = new Intent(context, WebContentActivity.class);
@@ -323,9 +297,34 @@ public class WebContentActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    @OnClick({R.id.imageBack, R.id.imageShare, R.id.imageCollect, R.id.tvComment, R.id.tvPraise})
+    public void viewOnClick(View view) {
+        switch (view.getId()) {
+            case R.id.imageBack:
+                finish();
+                break;
+            case R.id.imageShare:
+                ToastUtil.showToast(mActivity, "分享");
+                break;
+            case R.id.imageCollect:
+                ToastUtil.showToast(mActivity, "收藏");
+                break;
+            case R.id.tvComment:
+                ToastUtil.showToast(mActivity, "评论");
+                break;
+            case R.id.tvPraise:
+                ToastUtil.showToast(mActivity, "点赞");
+                break;
+
+        }
+
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         OkHttpUtils.getInstance().cancelTag(this);
     }
+
 }

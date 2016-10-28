@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import com.f8boss.zhihuribao.R;
 import com.f8boss.zhihuribao.util.BitmapUtil;
-import com.f8boss.zhihuribao.util.PicassoUtil;
 import com.f8boss.zhihuribao.util.Urls;
 import com.lzy.okhttputils.OkHttpUtils;
 import com.lzy.okhttputils.cache.CacheMode;
 import com.lzy.okhttputils.callback.StringCallback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,7 +72,6 @@ public class SplashActivity extends BaseActivity {
     private void downLoadMessage() {
         OkHttpUtils.get(Urls.SPLASH_IMAGEURL)
                 .tag(this)
-                .cacheTime(3600 * 1000 * 24)   //缓存时间为一天
                 .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
                 .execute(new StringCallback() {
                     @Override
@@ -82,9 +81,8 @@ public class SplashActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(s);
                             String imageUrl = jsonObject.getString("img");
                             final String author = jsonObject.getString("text");
-                            PicassoUtil.downLoadImage(mActivity, imageUrl, splashImageView);
+                            Picasso.with(mActivity).load(imageUrl).error(R.mipmap.splash_image).into(splashImageView);
                             tvAuthor.setText(author);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
