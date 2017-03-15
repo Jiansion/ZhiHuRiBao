@@ -5,33 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/mToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_primary"
-            app:title="首页" />
-
+            android:layout_height="?actionBarSize"
+            android:background="@color/colorPrimary"
+            app:navigationIcon="@mipmap/img_menu" />
 
         <FrameLayout
-            android:id="@+id/frameLayout"
+            android:id="@+id/mFrameLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/mToolbar" />
+            android:layout_height="match_parent" />
 
-    </RelativeLayout>
+    </LinearLayout>
+
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigation_menu"
+        android:id="@+id/mNavigationView"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="left"
-        app:itemIconTint="@color/colorPrimary"
-        app:itemTextColor="@android:color/black"
+        android:layout_gravity="start"
         app:menu="@menu/menu_content" />
 
 </android.support.v4.widget.DrawerLayout>

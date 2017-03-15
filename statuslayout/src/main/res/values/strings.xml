@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">StatusLayout</string>
+    <string name="stfErrorMessage">发生错误请重试</string>
+    <string name="stfEmptyMessage">内容为空</string>
+    <string name="stfLoadingMessage">数据加载中..</string>
+    <string name="stfButtonText">重试</string>
+</resources>

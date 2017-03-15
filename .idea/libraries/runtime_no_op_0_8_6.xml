@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="runtime-no-op-0.8.6">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/85d31d766773085aa22c9ca98081316b9a7fca51/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/85d31d766773085aa22c9ca98081316b9a7fca51/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.antfortune.freeline/runtime-no-op/0.8.6/50a5dd231dbce3825f808af826843a2611dd608e/runtime-no-op-0.8.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

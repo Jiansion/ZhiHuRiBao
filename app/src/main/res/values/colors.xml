@@ -4,12 +4,5 @@
     <color name="colorPrimaryDark">#1976d2</color>
     <color name="colorAccent">#FF4081</color>
 
-
-    <color name="colorGray">#88aba5a5</color>
-
-    <color name="color_primary">#2196f3</color>
-    <color name="color_primary_dark">#1976d2</color>
-    <color name="color_white">#fff</color>
-
-    <color name="colorLime">#a2a3a3</color>
+    <color name="colorHind">#80a4a3a3</color>
 </resources>

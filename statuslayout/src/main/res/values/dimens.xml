@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="stfProgressSize">60dp</dimen>
+    <dimen name="stfImageSize">80dp</dimen>
+</resources>
