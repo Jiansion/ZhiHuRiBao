@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.qianjia.dialog.ProgressWheel;
 
 /**
  * Created by Jiansion on 2017/3/8.
@@ -63,10 +66,18 @@ public class StatusLayout extends LinearLayout {
         a.recycle();
     }
 
+    /**
+     * 用于判断是否开启切换动画
+     *
+     * @return AnimationEnabled
+     */
     public boolean isAnimationEnabled() {
         return animationEnabled;
     }
 
+    /**
+     * @param animationEnabled 是否开启动画,默认开启动画
+     */
     public void setAnimationEnabled(boolean animationEnabled) {
         this.animationEnabled = animationEnabled;
     }
@@ -76,6 +87,11 @@ public class StatusLayout extends LinearLayout {
         return inAnimation;
     }
 
+    /**
+     * 设置迁入动画
+     *
+     * @param inAnimation
+     */
     public void setInAnimation(int inAnimation) {
         this.inAnimation = inAnimation;
     }
@@ -85,6 +101,11 @@ public class StatusLayout extends LinearLayout {
         return outAnimation;
     }
 
+    /**
+     * 设置迁出动画
+     *
+     * @param outAnimation
+     */
     public void setOutAnimation(int outAnimation) {
         this.outAnimation = outAnimation;
     }
@@ -97,6 +118,8 @@ public class StatusLayout extends LinearLayout {
         if (isInEditMode()) return;//判断视图是否处于编辑模式,隐藏状态View
         setOrientation(VERTICAL);//视图垂直摆放
         content = getChildAt(0);//获取主视图,即正常时的内容视图
+
+        //将状态视图添加到布局中
         LayoutInflater.from(getContext()).inflate(R.layout.status_layout, this, true);
         stContainer = (LinearLayout) findViewById(R.id.stContainer);
         stProgress = (ProgressBar) findViewById(R.id.stProgress);
@@ -105,28 +128,34 @@ public class StatusLayout extends LinearLayout {
         stButton = (Button) findViewById(R.id.stButton);
     }
 
-    //content
+    /**
+     * 显示内容视图
+     */
     public void showContent() {
-        if (isAnimationEnabled()) {
-            if (stContainer.getVisibility() == VISIBLE) {
-                Animation outAnim = createOutAnimation();
-                outAnim.setAnimationListener(new CustomAnimationListener() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        stContainer.setVisibility(GONE);
-                        content.setVisibility(VISIBLE);
-                        content.startAnimation(createInAnimation());
-                    }
-                });
-                stContainer.startAnimation(outAnim);
-            }
+        if (isAnimationEnabled() && stContainer.getVisibility() == VISIBLE) {
+            stContainer.clearAnimation();
+            content.clearAnimation();
+            Animation outAnim = createOutAnimation();
+            stContainer.startAnimation(outAnim);
+            stContainer.getAnimation().setAnimationListener(new CustomAnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    super.onAnimationEnd(animation);
+                    stContainer.setVisibility(GONE);
+                    content.setVisibility(VISIBLE);
+                    content.startAnimation(createInAnimation());
+                }
+            });
         } else {
             stContainer.setVisibility(GONE);
             content.setVisibility(VISIBLE);
         }
     }
 
-    //loading
+    /**
+     * loading
+     * showLoadingView
+     */
     public void showLoading() {
         showLoading(R.string.stfLoadingMessage);
     }
@@ -142,7 +171,10 @@ public class StatusLayout extends LinearLayout {
         );
     }
 
-    //empty
+    /**
+     * empty
+     * showEmptyView
+     */
     public void showEmpty() {
         showEmpty(R.string.stfEmptyMessage);
     }
@@ -158,7 +190,10 @@ public class StatusLayout extends LinearLayout {
         );
     }
 
-    //error
+    /**
+     * error
+     * showErrorView
+     */
     public void showError(OnClickListener listener) {
         showError(R.string.stfErrorMessage, listener);
     }
@@ -177,37 +212,32 @@ public class StatusLayout extends LinearLayout {
 
     }
 
+    /**
+     * 如果内容视图显示,先隐藏内容视图,后显示自定义视图
+     *
+     * @param options o
+     */
     private void showCustom(final CustomStateOptions options) {
-        stContainer.clearAnimation();
-        content.clearAnimation();
-        if (isAnimationEnabled()) {
-            Animation outAnimation = createOutAnimation();
-            if (stContainer.getVisibility() == GONE) {
-                outAnimation.setAnimationListener(new CustomAnimationListener() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        content.setVisibility(GONE);
-                        stContainer.setVisibility(VISIBLE);
-                        stContainer.startAnimation(createInAnimation());
-                    }
-                });
-                content.startAnimation(outAnimation);
-                state(options);
-            } else {
-                outAnimation.setAnimationListener(new CustomAnimationListener() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        state(options);
-                        stContainer.startAnimation(createInAnimation());
-                    }
-                });
-                stContainer.startAnimation(outAnimation);
-            }
-        } else {
-            content.setVisibility(GONE);
-            stContainer.setVisibility(VISIBLE);
-            state(options);
-        }
+//        stContainer.clearAnimation();
+//        content.clearAnimation();
+//        if (isAnimationEnabled() && content.getVisibility() == VISIBLE) {
+//            Animation outAnimation = createOutAnimation();
+//            content.startAnimation(outAnimation);
+//            content.getAnimation().setAnimationListener(new CustomAnimationListener() {
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//                    super.onAnimationEnd(animation);
+//                    content.setVisibility(GONE);
+//                    stContainer.setVisibility(VISIBLE);
+//                    state(options);
+//                    stContainer.startAnimation(createInAnimation());
+//                }
+//            });
+//        } else {
+        content.setVisibility(GONE);
+        stContainer.setVisibility(VISIBLE);
+        state(options);
+//        }
     }
 
     private void state(CustomStateOptions options) {
@@ -255,6 +285,7 @@ public class StatusLayout extends LinearLayout {
         return AnimationUtils.loadAnimation(getContext(), inAnimation);
     }
 
+    //先出后进,当迁出动画执行完毕时再执行迁入动画
     private Animation createOutAnimation() {
         return AnimationUtils.loadAnimation(getContext(), outAnimation);
     }

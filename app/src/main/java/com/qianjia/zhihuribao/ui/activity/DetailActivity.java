@@ -80,7 +80,7 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
     @Override
     protected void initView() {
 
-//        mStatusLayout.showLoading();
+        mStatusLayout.showLoading();
 
         mWebView.setScrollbarFadingEnabled(true);
         //能够和js交互
@@ -99,16 +99,16 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-//        mWebView.setWebChromeClient(new WebChromeClient() {
-//            @Override
-//            public void onProgressChanged(WebView view, int newProgress) {
-//                super.onProgressChanged(view, newProgress);
-//                if (newProgress == 100) {
-//                    LogUtil.e(TAG, "加载完成");
-//                    mStatusLayout.showContent();
-//                }
-//            }
-//        });
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (newProgress == 100) {
+                    LogUtil.e(TAG, "加载完成");
+                    mStatusLayout.showContent();
+                }
+            }
+        });
 
     }
 
@@ -147,7 +147,6 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
                 finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

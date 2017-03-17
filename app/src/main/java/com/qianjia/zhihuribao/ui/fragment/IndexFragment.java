@@ -10,6 +10,7 @@ import com.qianjia.basemodel.util.ToastUtil;
 import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.basemodel.widget.RecyclerScrollListerner;
 import com.qianjia.basemodel.widget.SwipeRefreshAction;
+import com.qianjia.statuslayout.StatusLayout;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.adapter.IndexAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
@@ -19,6 +20,8 @@ import com.qianjia.zhihuribao.ui.activity.DetailActivity;
 import com.qianjia.zhihuribao.util.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,8 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
     RecyclerView mRecyclerView;
     @BindView(R.id.mSwipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
+    @BindView(R.id.mStatusLayout)
+    StatusLayout mStatusLayout;
 
     private Banner banner;
 
@@ -54,7 +59,8 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
 
     @Override
     protected void initViews() {
-        mSwipeRefresh.post(SwipeRefreshAction.setSwipefreshAction(mSwipeRefresh, R.color.colorAccent));
+        mStatusLayout.showLoading();
+//        mSwipeRefresh.post(SwipeRefreshAction.setSwipefreshAction(mSwipeRefresh, R.color.colorAccent));
         headView = LayoutInflater.from(mActivity).inflate(R.layout.item_roll_view, null);
         banner = (Banner) headView.findViewById(R.id.banner);
         banner.setImageLoader(new GlideImageLoader());
@@ -128,13 +134,20 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
 
     @Override
     public void onError(ErrorType type) {
-        switch (type) {
-            case NETERROR:
-                ToastUtil.showToast(mActivity, "网络异常");
-                break;
-            case EXCEPTION:
-                ToastUtil.showToast(mActivity, "异常");
-                break;
+        if (TextUtils.isEmpty(data)) {
+            mStatusLayout.showError(type == ErrorType.NETERROR ? "发生网络异常" : "发生未知错误", v -> {
+                mStatusLayout.showLoading();
+                presenter.requestIndexData(null);
+            });
+        } else {
+            switch (type) {
+                case NETERROR:
+                    ToastUtil.showToast(mActivity, "网络异常");
+                    break;
+                case EXCEPTION:
+                    ToastUtil.showToast(mActivity, "异常");
+                    break;
+            }
         }
 
     }

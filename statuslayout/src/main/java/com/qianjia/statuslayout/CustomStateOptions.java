@@ -3,13 +3,12 @@ package com.qianjia.statuslayout;
 import android.support.annotation.DrawableRes;
 import android.view.View;
 
-import java.io.Serializable;
-
 /**
  * Created by Jiansion on 2017/3/8.
+ * 设置 StatusLayout 的各种视图参数
  */
 
-class CustomStateOptions implements Serializable {
+class CustomStateOptions {
 
     @DrawableRes
     private int imageRes;
@@ -19,7 +18,7 @@ class CustomStateOptions implements Serializable {
 
     private View.OnClickListener btnClickListener;
 
-    public CustomStateOptions image(@DrawableRes int val) {
+    CustomStateOptions image(@DrawableRes int val) {
         imageRes = val;
         return this;
     }
