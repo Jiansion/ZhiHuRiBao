@@ -8,6 +8,7 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
+    android:minHeight="100dp"
     app:cardCornerRadius="3dp">
 
     <LinearLayout
@@ -25,6 +26,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <FrameLayout
+            android:id="@+id/imagePosterLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">

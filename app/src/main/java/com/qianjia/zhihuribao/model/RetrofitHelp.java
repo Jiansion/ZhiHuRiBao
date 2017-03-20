@@ -7,6 +7,8 @@ import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.api.ZhiHuApi;
 import com.qianjia.zhihuribao.bean.Detail;
 import com.qianjia.zhihuribao.bean.IndexList;
+import com.qianjia.zhihuribao.bean.Theme;
+import com.qianjia.zhihuribao.bean.ThemesCount;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Jiansion on 2017/3/14.
+ * 网络请求操作类
  */
 
 public class RetrofitHelp {
@@ -99,4 +102,54 @@ public class RetrofitHelp {
         });
 
     }
+
+
+    /**
+     * 获取全部栏目主题
+     *
+     * @param modelCallBack
+     */
+    public static void getThemesList(ModelCallBack<Theme> modelCallBack) {
+        ZhiHuApi api = createApi(ZhiHuApi.class);
+        Call<Theme> themes = api.getThemes();
+        themes.enqueue(new Callback<Theme>() {
+            @Override
+            public void onResponse(Call<Theme> call, Response<Theme> response) {
+                Theme body = response.body();
+                modelCallBack.onRequestSuccess(body);
+            }
+
+            @Override
+            public void onFailure(Call<Theme> call, Throwable t) {
+                modelCallBack.onRequestError(BaseView.ErrorType.NETERROR);
+            }
+        });
+    }
+
+
+    /**
+     * 获取栏目的内容
+     *
+     * @param id            栏目id
+     * @param modelCallBack
+     */
+    public static void getThemesContnet(int id, ModelCallBack<ThemesCount> modelCallBack) {
+        ZhiHuApi api = createApi(ZhiHuApi.class);
+        Call<ThemesCount> themesCount = api.getThemesCount(id);
+        themesCount.enqueue(new Callback<ThemesCount>() {
+            @Override
+            public void onResponse(Call<ThemesCount> call, Response<ThemesCount> response) {
+                ThemesCount body = response.body();
+                modelCallBack.onRequestSuccess(body);
+
+            }
+
+            @Override
+            public void onFailure(Call<ThemesCount> call, Throwable t) {
+                modelCallBack.onRequestError(BaseView.ErrorType.NETERROR);
+            }
+        });
+
+    }
+
 }

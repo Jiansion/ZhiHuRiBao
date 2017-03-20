@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/colorPrimary"
-            app:navigationIcon="@mipmap/img_menu" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <FrameLayout
             android:id="@+id/mFrameLayout"
@@ -25,11 +26,11 @@
     </LinearLayout>
 
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/mNavigationView"
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.qianjia.zhihuribao.ui.fragment.ThemeMenuFragment"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/menu_content" />
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>

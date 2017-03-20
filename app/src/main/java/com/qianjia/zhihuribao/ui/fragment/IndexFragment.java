@@ -9,7 +9,6 @@ import android.view.View;
 import com.qianjia.basemodel.util.ToastUtil;
 import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.basemodel.widget.RecyclerScrollListerner;
-import com.qianjia.basemodel.widget.SwipeRefreshAction;
 import com.qianjia.statuslayout.StatusLayout;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.adapter.IndexAdapter;
@@ -20,8 +19,6 @@ import com.qianjia.zhihuribao.ui.activity.DetailActivity;
 import com.qianjia.zhihuribao.util.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +111,14 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
     public void onSuccess(IndexList indexList) {
         data = indexList.getDate();
         List<IndexList.TopStoriesBean> top_stories = indexList.getTop_stories();
+        List<IndexList.StoriesBean> stories = indexList.getStories();
         if (top_stories != null) {
-            adapter.updateData(indexList.getStories());
+            if (stories.isEmpty()) {
+                mStatusLayout.showEmpty();
+            } else {
+                mStatusLayout.showContent();
+            }
+            adapter.updateData(stories);
             List<String> imList = new ArrayList<>();
             List<String> titleList = new ArrayList<>();
             for (IndexList.TopStoriesBean bean : top_stories) {
@@ -126,9 +129,8 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
             banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
             banner.start();
             banner.setOnBannerListener(position -> DetailActivity.onToDatailPage(mActivity, top_stories.get(position).getId()));
-
         } else {
-            adapter.addItems(indexList.getStories());
+            adapter.addItems(stories);
         }
     }
 
