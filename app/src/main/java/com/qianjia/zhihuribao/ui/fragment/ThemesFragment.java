@@ -3,6 +3,10 @@ package com.qianjia.zhihuribao.ui.fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.statuslayout.StatusLayout;
@@ -11,6 +15,7 @@ import com.qianjia.zhihuribao.adapter.ThemesCountAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
 import com.qianjia.zhihuribao.bean.ThemesCount;
 import com.qianjia.zhihuribao.presenter.ThemesContentPresenter;
+import com.qianjia.zhihuribao.util.ImageLoaderUtil;
 
 import java.util.ArrayList;
 
@@ -31,6 +36,15 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
 
     @BindView(R.id.mStatusLayout)
     StatusLayout mStatusLayout;
+
+    private View heardView;
+    //栏目主题图片
+    private ImageView imPoster;
+    //栏目说明
+    private TextView tvCaption;
+
+//    private Handler handler = new Handler();
+
 
     private ThemesCountAdapter adapter;
 
@@ -56,13 +70,16 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_list_view;
+        return R.layout.fragment_themes;
     }
 
     @Override
     protected void initViews() {
         mStatusLayout.showLoading();
         mSwipeRefresh.setOnRefreshListener(() -> presenter.onGetThemeCount(id));
+        heardView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_themes_header, mRecyclerView, false);
+        imPoster = (ImageView) heardView.findViewById(R.id.imPoster);
+        tvCaption = (TextView) heardView.findViewById(R.id.tvCaption);
 
 
     }
@@ -75,12 +92,25 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
 
         adapter = new ThemesCountAdapter(mActivity, new ArrayList<>());
         mRecyclerView.setAdapter(adapter);
+        adapter.setHeadView(heardView);
 
     }
 
 
     @Override
     public void onSuccess(ThemesCount themesCount) {
+        String background = themesCount.getBackground();
+//        String image = themesCount.getImage();
+
+        ImageLoaderUtil.loadImage(mActivity, background, imPoster);
+//        new Thread(() -> {
+//            Bitmap bitmap = ImageLoaderUtil.loadBitmap(mActivity, background);
+//            handler.post(() -> imPoster.setBackground(new BitmapDrawable(bitmap)));
+//        }).start();
+
+        String description = themesCount.getDescription();
+        tvCaption.setText(description);
+
         adapter.addItems(themesCount.getStories());
         mStatusLayout.showContent();
     }

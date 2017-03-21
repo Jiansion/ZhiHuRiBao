@@ -3,9 +3,11 @@ package com.qianjia.zhihuribao.ui.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import com.qianjia.zhihuribao.R;
@@ -28,6 +30,9 @@ public class MainActivity extends BaseActivity implements ThemeMenuFragment.Item
     @BindView(R.id.mDrawerLayout)
     DrawerLayout mDrawerLayout;
 
+
+    private ThemeMenuFragment themesFragment;
+
     private Map<Integer, Fragment> map;
 
     private int firstId = -1;
@@ -45,6 +50,8 @@ public class MainActivity extends BaseActivity implements ThemeMenuFragment.Item
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
         mDrawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+
+        themesFragment = (ThemeMenuFragment) getSupportFragmentManager().findFragmentById(R.id.menuFragment);
     }
 
     @SuppressLint("UseSparseArrays")
@@ -74,7 +81,6 @@ public class MainActivity extends BaseActivity implements ThemeMenuFragment.Item
             return;
         }
         mToolbar.setTitle(title);
-//        getSupportActionBar().setTitle(title);
 
         if (id != -1) {//切换其他页面
             ThemesFragment fragment = (ThemesFragment) map.get(id);
@@ -108,6 +114,28 @@ public class MainActivity extends BaseActivity implements ThemeMenuFragment.Item
                     .commit();
         }
         firstId = id;
-
     }
+
+    @SuppressLint("RtlHardcoded")
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT) || mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
+        if (firstId == -1) {
+            super.onBackPressed();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .hide(map.get(firstId))
+                    .show(map.get(-1))
+                    .commit();
+            firstId = -1;
+            mToolbar.setTitle("首页");
+            themesFragment.selectView.setBackgroundColor(0xFFFFFF);
+        }
+    }
+
 }

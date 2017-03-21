@@ -55,6 +55,15 @@ public class IndexList {
 
         private int id;
         private String title;
+        private int type;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
 
         //是否多图
         private boolean multipic;
@@ -105,6 +114,15 @@ public class IndexList {
         private String image;
         private int id;
         private String title;
+        private int type;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
 
         public String getImage() {
             return image;

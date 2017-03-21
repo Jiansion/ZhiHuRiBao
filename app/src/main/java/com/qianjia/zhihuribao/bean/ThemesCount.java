@@ -95,6 +95,15 @@ public class ThemesCount {
         private int id;
         private String title;
         private List<String> images;
+        private int type;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
 
         public int getId() {
             return id;

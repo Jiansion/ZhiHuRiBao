@@ -51,7 +51,7 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_list_view;
+        return R.layout.fragment_themes;
     }
 
     @Override

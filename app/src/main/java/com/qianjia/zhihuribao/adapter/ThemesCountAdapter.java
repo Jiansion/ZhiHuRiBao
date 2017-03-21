@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
  * Created by Jiansion on 2017/3/20.
  */
 
-public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesBean, ThemesCountAdapter.ViewHolder> {
+public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesBean, RecyclerView.ViewHolder> {
 
 
     private LayoutInflater inflater;
@@ -36,13 +36,20 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
     }
 
     @Override
+    protected RecyclerView.ViewHolder setHeadFooterView(ViewGroup parent, int viewType) {
+        return new HeadFooterHolder(getHeadView());
+    }
+
+    @Override
     protected ViewHolder setDefaultView(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_list, parent, false);
         return new ViewHolder(view);
     }
 
+
     @Override
-    protected void onViewSetting(ViewHolder holder, int pos) {
+    protected void onViewSetting(RecyclerView.ViewHolder vh, int pos) {
+        ThemesCountAdapter.ViewHolder holder = (ThemesCountAdapter.ViewHolder) vh;
         ThemesCount.StoriesBean storiesBean = mList.get(pos);
         String title = storiesBean.getTitle();
         int id = storiesBean.getId();
@@ -57,9 +64,8 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
         holder.tvTitle.setText(title);
 
         holder.mCardView.setOnClickListener(v -> DetailActivity.onToDatailPage(mContext, id));
-
-
     }
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvTitle)

@@ -1,17 +1,12 @@
 package com.qianjia.zhihuribao.ui.activity;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -20,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.qianjia.basemodel.view.BaseView;
-import com.qianjia.basemodel.view.ProgressView;
-import com.qianjia.statuslayout.StatusLayout;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.base.BaseActivity;
 import com.qianjia.zhihuribao.bean.Detail;
@@ -54,10 +47,6 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
     @BindView(R.id.mWebView)
     WebView mWebView;
 
-    @BindView(R.id.mStatusLayout)
-    StatusLayout mStatusLayout;
-
-
     @BindView(R.id.tvTitle)
     TextView tvTitle;
 
@@ -80,7 +69,6 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
     @Override
     protected void initView() {
 
-        mStatusLayout.showLoading();
 
         mWebView.setScrollbarFadingEnabled(true);
         //能够和js交互
@@ -105,7 +93,6 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
                 super.onProgressChanged(view, newProgress);
                 if (newProgress == 100) {
                     LogUtil.e(TAG, "加载完成");
-                    mStatusLayout.showContent();
                 }
             }
         });
@@ -134,10 +121,7 @@ public class DetailActivity extends BaseActivity implements BaseView<Detail> {
 
     @Override
     public void onError(ErrorType type) {
-        mStatusLayout.showError("发生异常,请重试", v -> {
-            mStatusLayout.showLoading();
-            presenter.onGetDatailData(id);
-        });
+
     }
 
     @Override

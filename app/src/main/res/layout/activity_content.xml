@@ -1,79 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.qianjia.statuslayout.StatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mStatusLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/mAppBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="240dp"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/mAppBar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/mToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:fitsSystemWindows="true">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/mToolbarLayout"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways">
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideInset">
 
-                <FrameLayout
+                <ImageView
+                    android:id="@+id/imPoster"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:scrollbarStyle="insideInset">
+                    android:scaleType="centerCrop" />
 
-                    <ImageView
-                        android:id="@+id/imPoster"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fitsSystemWindows="true"
-                        android:scaleType="centerCrop" />
-
-                    <TextView
-                        android:id="@+id/tvTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_margin="10dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
-                </FrameLayout>
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/mToolbar"
+                <TextView
+                    android:id="@+id/tvTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
 
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="true"
-            android:scrollbarFadeDuration="1"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <WebView
-                android:id="@+id/mWebView"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/mToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
-</com.qianjia.statuslayout.StatusLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="true"
+        android:scrollbarFadeDuration="1"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <WebView
+            android:id="@+id/mWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
