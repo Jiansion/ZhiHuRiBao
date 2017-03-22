@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.bean.IndexList;
-import com.qianjia.zhihuribao.ui.activity.DetailActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailDefaultActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailOtherActivity;
 import com.qianjia.zhihuribao.util.ImageLoaderUtil;
 
 import java.util.List;
@@ -100,7 +101,15 @@ public class IndexAdapter extends RecyclerView.Adapter {
             }
             contentHolder.tvTitle.setText(storiesBean.getTitle());
             ImageLoaderUtil.loadImage(context, storiesBean.getImages().get(0), contentHolder.imPoster);
-            contentHolder.mCardView.setOnClickListener(v -> DetailActivity.onToDatailPage(context, storiesBean.getId()));
+            contentHolder.mCardView.setOnClickListener(v -> {
+                int type = storiesBean.getType();
+                int id = storiesBean.getId();
+                if (type == 0) {
+                    DetailDefaultActivity.onToDetailPage(context, id);
+                } else {
+                    DetailOtherActivity.onToDetailPage(context, id, type);
+                }
+            });
 
         }
 

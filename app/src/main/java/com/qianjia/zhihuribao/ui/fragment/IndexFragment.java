@@ -15,7 +15,8 @@ import com.qianjia.zhihuribao.adapter.IndexAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
 import com.qianjia.zhihuribao.bean.IndexList;
 import com.qianjia.zhihuribao.presenter.IndexPresenter;
-import com.qianjia.zhihuribao.ui.activity.DetailActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailDefaultActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailOtherActivity;
 import com.qianjia.zhihuribao.util.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -128,7 +129,15 @@ public class IndexFragment extends BaseFragment implements ProgressView<IndexLis
             banner.update(imList, titleList);
             banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
             banner.start();
-            banner.setOnBannerListener(position -> DetailActivity.onToDatailPage(mActivity, top_stories.get(position).getId()));
+            banner.setOnBannerListener(position -> {
+                int id = top_stories.get(position).getId();
+                int type = top_stories.get(position).getType();
+                if (type == 0) {
+                    DetailDefaultActivity.onToDetailPage(mActivity, id);
+                } else {
+                    DetailOtherActivity.onToDetailPage(mActivity, id, type);
+                }
+            });
         } else {
             adapter.addItems(stories);
         }

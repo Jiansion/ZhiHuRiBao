@@ -20,7 +20,8 @@
         </activity>
 
 
-        <activity android:name=".ui.activity.DetailActivity" />
+        <activity android:name=".ui.activity.DetailDefaultActivity" />
+        <activity android:name=".ui.activity.DetailOtherActivity" />
     </application>
 
 </manifest>

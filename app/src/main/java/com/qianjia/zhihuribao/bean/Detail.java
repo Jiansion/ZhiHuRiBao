@@ -11,8 +11,9 @@ public class Detail {
 
     /**
      * body :  <div> </div>
-     * image_source : Henry Söderlund / CC BY
      * title : 中国城市交通真的需要那么多共享单车吗？
+     * recommenders : [{"avatar":"http://pic2.zhimg.com/d3b31fa32_m.jpg"}]
+     * image_source : Henry Söderlund / CC BY
      * image : http://pic4.zhimg.com/1b0f8ec016024f4c0622051608517263.jpg
      * share_url : http://daily.zhihu.com/story/9286626
      * js : []
@@ -21,6 +22,7 @@ public class Detail {
      * type : 0
      * id : 9286626
      * css : ["http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3"]
+     * theme : {"thumbnail":"http://pic3.zhimg.com/00eba01080138a5ac861d581a64ff9bd.jpg","id":3,"name":"电影日报"}
      */
 
     private String body;
@@ -29,9 +31,20 @@ public class Detail {
     private String image;
     private String share_url;
     private int id;
+    private List<RecommendersBean> recommenders;
     private List<String> js;
     private List<String> images;
     private List<String> css;
+    private ThemeBean theme;
+
+    public List<RecommendersBean> getRecommenders() {
+        return recommenders;
+    }
+
+    public void setRecommenders(List<RecommendersBean> recommenders) {
+        this.recommenders = recommenders;
+    }
+
 
     public String getBody() {
         return body;
@@ -103,5 +116,57 @@ public class Detail {
 
     public void setCss(List<String> css) {
         this.css = css;
+    }
+
+    public static class RecommendersBean {
+        /**
+         * avatar : http://pic2.zhimg.com/d3b31fa32_m.jpg
+         */
+
+        private String avatar;
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+    }
+
+    public static class ThemeBean {
+        /**
+         * thumbnail : http://pic3.zhimg.com/00eba01080138a5ac861d581a64ff9bd.jpg
+         * id : 3
+         * name : 电影日报
+         */
+
+        private String thumbnail;
+        private int id;
+        private String name;
+
+        public String getThumbnail() {
+            return thumbnail;
+        }
+
+        public void setThumbnail(String thumbnail) {
+            this.thumbnail = thumbnail;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }

@@ -13,7 +13,8 @@ import android.widget.TextView;
 import com.qianjia.basemodel.widget.BaseRecyclerAdapter;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.bean.ThemesCount;
-import com.qianjia.zhihuribao.ui.activity.DetailActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailDefaultActivity;
+import com.qianjia.zhihuribao.ui.activity.DetailOtherActivity;
 import com.qianjia.zhihuribao.util.ImageLoaderUtil;
 
 import java.util.List;
@@ -63,7 +64,15 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
 
         holder.tvTitle.setText(title);
 
-        holder.mCardView.setOnClickListener(v -> DetailActivity.onToDatailPage(mContext, id));
+        int type = storiesBean.getType();
+
+        holder.mCardView.setOnClickListener(v -> {
+            if (type == 0) {
+                DetailDefaultActivity.onToDetailPage(mContext, id);
+            } else {
+                DetailOtherActivity.onToDetailPage(mContext, id, type);
+            }
+        });
     }
 
 

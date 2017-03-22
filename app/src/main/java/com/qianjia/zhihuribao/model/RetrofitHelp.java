@@ -81,6 +81,7 @@ public class RetrofitHelp {
 
     /**
      * 获取详情页的数据
+     * type:0 or type:1
      *
      * @param id
      * @param modelCallBack
@@ -100,6 +101,10 @@ public class RetrofitHelp {
                 modelCallBack.onRequestError(BaseView.ErrorType.NETERROR);
             }
         });
+
+    }
+
+    public static void getZhiHuDetail(int id){
 
     }
 
@@ -141,7 +146,6 @@ public class RetrofitHelp {
             public void onResponse(Call<ThemesCount> call, Response<ThemesCount> response) {
                 ThemesCount body = response.body();
                 modelCallBack.onRequestSuccess(body);
-
             }
 
             @Override
