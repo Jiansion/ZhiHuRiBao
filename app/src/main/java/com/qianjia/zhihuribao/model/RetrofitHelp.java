@@ -104,7 +104,7 @@ public class RetrofitHelp {
 
     }
 
-    public static void getZhiHuDetail(int id){
+    public static void getZhiHuDetail(int id) {
 
     }
 
@@ -138,9 +138,33 @@ public class RetrofitHelp {
      * @param id            栏目id
      * @param modelCallBack
      */
-    public static void getThemesContnet(int id, ModelCallBack<ThemesCount> modelCallBack) {
+    public static void getThemesContent(int id, ModelCallBack<ThemesCount> modelCallBack) {
         ZhiHuApi api = createApi(ZhiHuApi.class);
         Call<ThemesCount> themesCount = api.getThemesCount(id);
+        themesCount.enqueue(new Callback<ThemesCount>() {
+            @Override
+            public void onResponse(Call<ThemesCount> call, Response<ThemesCount> response) {
+                ThemesCount body = response.body();
+                modelCallBack.onRequestSuccess(body);
+            }
+
+            @Override
+            public void onFailure(Call<ThemesCount> call, Throwable t) {
+                modelCallBack.onRequestError(BaseView.ErrorType.NETERROR);
+            }
+        });
+    }
+
+    /**
+     * 加载其他栏目的过往内容
+     *
+     * @param id            栏目ID
+     * @param lastItemId    显示的最后一项内容的 ID
+     * @param modelCallBack callback
+     */
+    public static void getThemesCoutent(int id, int lastItemId, ModelCallBack<ThemesCount> modelCallBack) {
+        ZhiHuApi api = createApi(ZhiHuApi.class);
+        Call<ThemesCount> themesCount = api.getThemesCount(id, lastItemId);
         themesCount.enqueue(new Callback<ThemesCount>() {
             @Override
             public void onResponse(Call<ThemesCount> call, Response<ThemesCount> response) {

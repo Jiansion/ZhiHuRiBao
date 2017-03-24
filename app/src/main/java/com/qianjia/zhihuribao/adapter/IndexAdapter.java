@@ -43,7 +43,8 @@ public class IndexAdapter extends RecyclerView.Adapter {
     }
 
     public void addItems(List<IndexList.StoriesBean> mList) {
-        int start = this.mList.size();
+        //当有头布局时刷新位置理应在要往后移一位
+        int start = getHeadView() == null ? this.mList.size() : this.mList.size() + 1;
         this.mList.addAll(mList);
         notifyItemRangeChanged(start, mList.size());
     }

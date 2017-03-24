@@ -1,15 +1,16 @@
 package com.qianjia.zhihuribao.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.qianjia.basemodel.view.ProgressView;
+import com.qianjia.basemodel.util.ToastUtil;
+import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.statuslayout.StatusLayout;
+import com.qianjia.swiperefresh.SwipeRefreshLayout;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.adapter.ThemesCountAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
@@ -18,6 +19,7 @@ import com.qianjia.zhihuribao.presenter.ThemesContentPresenter;
 import com.qianjia.zhihuribao.util.ImageLoaderUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -26,7 +28,7 @@ import butterknife.BindView;
  * 各类栏目
  */
 
-public class ThemesFragment extends BaseFragment implements ProgressView<ThemesCount> {
+public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount> {
 
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
@@ -43,16 +45,16 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
     //栏目说明
     private TextView tvCaption;
 
-//    private Handler handler = new Handler();
-
-
     private ThemesCountAdapter adapter;
 
     private final static String THEME_KEY = "theme_key";
 
     private ThemesContentPresenter presenter;
 
+    //栏目ID
     private int id;
+
+    private int lastItemId = 0;
 
     /**
      * 传入列表参数获取对象的Fragment
@@ -76,19 +78,31 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
     @Override
     protected void initViews() {
         mStatusLayout.showLoading();
-        mSwipeRefresh.setOnRefreshListener(() -> presenter.onGetThemeCount(id));
+
         heardView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_themes_header, mRecyclerView, false);
         imPoster = (ImageView) heardView.findViewById(R.id.imPoster);
         tvCaption = (TextView) heardView.findViewById(R.id.tvCaption);
 
-
+        mSwipeRefresh.setMode(SwipeRefreshLayout.Mode.BOTH);
+        mSwipeRefresh.setOnRefreshListener(() -> {
+            lastItemId = 0;
+            presenter.onGetThemeCount(id, lastItemId);
+        });
+        mSwipeRefresh.setOnPullUpRefreshListener(() ->
+        {
+            if (lastItemId != 0) {
+                presenter.onGetThemeCount(id, lastItemId);
+            } else {
+                mSwipeRefresh.setPullUpRefreshing(false);
+            }
+        });
     }
 
     @Override
     protected void initData() {
         id = getArguments().getInt(THEME_KEY, 0);
         presenter = new ThemesContentPresenter(this);
-        presenter.onGetThemeCount(id);
+        presenter.onGetThemeCount(id, 0);
 
         adapter = new ThemesCountAdapter(mActivity, new ArrayList<>());
         mRecyclerView.setAdapter(adapter);
@@ -99,39 +113,36 @@ public class ThemesFragment extends BaseFragment implements ProgressView<ThemesC
 
     @Override
     public void onSuccess(ThemesCount themesCount) {
-        String background = themesCount.getBackground();
-//        String image = themesCount.getImage();
+        mSwipeRefresh.setRefreshing(false);
+        mSwipeRefresh.setPullUpRefreshing(false);
+        List<ThemesCount.StoriesBean> stories = themesCount.getStories();
+        if (lastItemId == 0) {
+            String background = themesCount.getBackground();
+            ImageLoaderUtil.loadImage(mActivity, background, imPoster);
+            String description = themesCount.getDescription();
+            tvCaption.setText(description);
+            mStatusLayout.showContent();
+            adapter.updateItems(stories);
+        } else {
+            adapter.addItems(stories);
+        }
 
-        ImageLoaderUtil.loadImage(mActivity, background, imPoster);
-//        new Thread(() -> {
-//            Bitmap bitmap = ImageLoaderUtil.loadBitmap(mActivity, background);
-//            handler.post(() -> imPoster.setBackground(new BitmapDrawable(bitmap)));
-//        }).start();
+        lastItemId = stories.get(stories.size() - 1).getId();
 
-        String description = themesCount.getDescription();
-        tvCaption.setText(description);
-
-        adapter.addItems(themesCount.getStories());
-        mStatusLayout.showContent();
     }
 
     @Override
     public void onError(ErrorType type) {
-        mStatusLayout.showError("网络链接异常", v -> {
-            mStatusLayout.showLoading();
-            presenter.onGetThemeCount(id);
-        });
-    }
-
-    @Override
-    public void onShowProgress() {
-
-    }
-
-    @Override
-    public void onHindProgress() {
-        if (mSwipeRefresh.isRefreshing()) {
-            mSwipeRefresh.setRefreshing(false);
+        mSwipeRefresh.setRefreshing(false);
+        mSwipeRefresh.setPullUpRefreshing(false);
+        if (lastItemId == 0) {
+            mStatusLayout.showError("网络链接异常", v -> {
+                mStatusLayout.showLoading();
+                presenter.onGetThemeCount(id, lastItemId);
+            });
+        } else {
+            ToastUtil.showToast(mActivity, "网络异常");
         }
     }
+
 }

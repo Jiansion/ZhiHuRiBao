@@ -129,6 +129,7 @@ public abstract class BaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
 
     /**
      * 插入一条数据
+     * 往头部插入一条数据
      */
     public void addItem(T item) {
         mList.add(0, item);
@@ -152,13 +153,10 @@ public abstract class BaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
      * 在列表尾添加一串数据
      */
     public void addItems(List<T> items) {
-        int start = mList.size();
+        int start = getHeadView() == null ? mList.size() : mList.size() + 1;
         mList.addAll(items);
-        if (headView == null) {
-            notifyItemRangeChanged(start, items.size());
-        } else {
-            notifyItemRangeChanged(start + 1, items.size());
-        }
+        notifyItemRangeChanged(start, items.size());
+
     }
 
     /**

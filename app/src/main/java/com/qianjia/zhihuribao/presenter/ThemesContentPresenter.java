@@ -2,32 +2,34 @@ package com.qianjia.zhihuribao.presenter;
 
 import com.qianjia.basemodel.listener.ModelCallBack;
 import com.qianjia.basemodel.view.BaseView;
-import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.zhihuribao.bean.ThemesCount;
 import com.qianjia.zhihuribao.model.RetrofitHelp;
 
 /**
  * Created by Jiansion on 2017/3/20.
+ * 加载其他栏目的链接层
  */
 
 public class ThemesContentPresenter implements ModelCallBack<ThemesCount> {
 
-    private ProgressView<ThemesCount> view;
+    private BaseView<ThemesCount> view;
 
-    public ThemesContentPresenter(ProgressView<ThemesCount> view) {
+    public ThemesContentPresenter(BaseView<ThemesCount> view) {
         this.view = view;
     }
 
-    public void onGetThemeCount(int id) {
+    public void onGetThemeCount(int id, int lastItemId) {
         if (view != null)
-            view.onShowProgress();
-        RetrofitHelp.getThemesContnet(id, this);
+            if (lastItemId == 0) {
+                RetrofitHelp.getThemesContent(id, this);
+            } else {
+                RetrofitHelp.getThemesCoutent(id, lastItemId, this);
+            }
     }
 
     @Override
     public void onRequestSuccess(ThemesCount themesCount) {
         if (view != null) {
-            view.onHindProgress();
             view.onSuccess(themesCount);
         }
     }
@@ -35,7 +37,6 @@ public class ThemesContentPresenter implements ModelCallBack<ThemesCount> {
     @Override
     public void onRequestError(BaseView.ErrorType type) {
         if (view != null) {
-            view.onHindProgress();
             view.onError(type);
         }
     }

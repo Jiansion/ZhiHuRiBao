@@ -15,18 +15,16 @@ import com.qianjia.zhihuribao.model.RetrofitHelp;
 
 public class IndexPresenter implements ModelCallBack<IndexList> {
 
-    private ProgressView<IndexList> view;
+    private BaseView<IndexList> view;
 
-    public IndexPresenter(ProgressView<IndexList> view) {
+    public IndexPresenter(BaseView<IndexList> view) {
         this.view = view;
     }
 
     public void requestIndexData(@Nullable String date) {
         if (view != null && date == null) {
-            view.onShowProgress();
             RetrofitHelp.getZhiHuData(this);
         } else if (view != null) {
-            view.onShowProgress();
             RetrofitHelp.getZhiHuData(date, this);
         }
     }
@@ -34,7 +32,6 @@ public class IndexPresenter implements ModelCallBack<IndexList> {
     @Override
     public void onRequestSuccess(IndexList indexList) {
         if (view != null) {
-            view.onHindProgress();
             view.onSuccess(indexList);
         }
 
@@ -43,7 +40,6 @@ public class IndexPresenter implements ModelCallBack<IndexList> {
     @Override
     public void onRequestError(BaseView.ErrorType type) {
         if (view != null) {
-            view.onHindProgress();
             view.onError(type);
         }
     }
