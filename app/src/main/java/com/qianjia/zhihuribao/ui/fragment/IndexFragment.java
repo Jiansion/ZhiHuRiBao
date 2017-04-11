@@ -109,7 +109,9 @@ public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
         if (top_stories != null) {
             setFirstPage(top_stories, stories);
         } else {
+            int itemCount = adapter.getItemCount();
             adapter.addItems(stories);
+            mRecyclerView.scrollToPosition(itemCount);
         }
 
         mSwipeRefresh.setRefreshing(false);
@@ -138,7 +140,7 @@ public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
             int id = top_stories.get(position).getId();
             int type = top_stories.get(position).getType();
             if (type == 0) {
-                DetailDefaultActivity.onToDetailPage(mActivity, id);
+                DetailDefaultActivity.onToDetailPage(mActivity, id, banner);
             } else {
                 DetailOtherActivity.onToDetailPage(mActivity, id, type);
             }

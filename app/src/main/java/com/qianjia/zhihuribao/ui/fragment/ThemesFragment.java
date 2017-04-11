@@ -124,7 +124,9 @@ public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount
             mStatusLayout.showContent();
             adapter.updateItems(stories);
         } else {
+            int itemCount = adapter.getItemCount();
             adapter.addItems(stories);
+            mRecyclerView.scrollToPosition(itemCount);
         }
 
         lastItemId = stories.get(stories.size() - 1).getId();

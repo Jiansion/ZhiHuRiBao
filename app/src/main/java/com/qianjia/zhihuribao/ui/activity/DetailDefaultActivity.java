@@ -1,8 +1,11 @@
 package com.qianjia.zhihuribao.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
@@ -58,10 +61,14 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     private DetailPresenter presenter;
 
 
-    public static void onToDetailPage(Context context, int id) {
+    public static void onToDetailPage(Context context, int id, View view) {
         Intent intent = new Intent(context, DetailDefaultActivity.class);
         intent.putExtra(DETAIL_ID, id);
-        context.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, view, "tranAnima").toBundle());
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     @Override
@@ -140,7 +147,8 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+//                finish();
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);

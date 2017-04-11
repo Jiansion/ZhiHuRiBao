@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Jiansion on 2017/3/20.
+ * 其他主题日报列表
  */
 
 public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesBean, RecyclerView.ViewHolder> {
@@ -68,7 +69,7 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
 
         holder.mCardView.setOnClickListener(v -> {
             if (type == 0) {
-                DetailDefaultActivity.onToDetailPage(mContext, id);
+                DetailDefaultActivity.onToDetailPage(mContext, id, holder.mCardView);
             } else {
                 DetailOtherActivity.onToDetailPage(mContext, id, type);
             }

@@ -34,14 +34,21 @@
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop" />
 
-                <TextView
-                    android:id="@+id/tvTitle"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_margin="10dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:background="@drawable/title_bg">
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="1111"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+                </FrameLayout>
             </FrameLayout>
 
             <android.support.v7.widget.Toolbar
