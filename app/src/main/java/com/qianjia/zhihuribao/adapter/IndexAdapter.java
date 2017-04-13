@@ -101,7 +101,7 @@ public class IndexAdapter extends RecyclerView.Adapter {
                 contentHolder.tvMoreImage.setVisibility(View.GONE);
             }
             contentHolder.tvTitle.setText(storiesBean.getTitle());
-            ImageLoaderUtil.loadImage(context, storiesBean.getImages().get(0), contentHolder.imPoster);
+            ImageLoaderUtil.loadThumbnail(context, storiesBean.getImages().get(0), contentHolder.imPoster);
             contentHolder.mCardView.setOnClickListener(v -> {
                 int type = storiesBean.getType();
                 int id = storiesBean.getId();

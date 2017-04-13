@@ -25,6 +25,9 @@ public class RoundedTransform extends BitmapTransformation {
 
     public RoundedTransform(Context context, int dp) {
         super(context);
+        if (dp < 4) {
+            dp = 4;
+        }
         this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
     }
 

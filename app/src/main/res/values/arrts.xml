@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleProgressBar">
+        <!--当前的进度-->
+        <attr name="number_progress" format="integer" />
+        <!--外环的宽度-->
+        <attr name="border_width" format="dimension" />
+        <!--未达到进度的外环颜色-->
+        <attr name="unreached_color" format="color" />
+        <!--达到进度的外环颜色-->
+        <attr name="reached_color" format="color" />
+        <!--中间数字的颜色-->
+        <attr name="number_corlor" format="color" />
+        <!--中间数字的大小-->
+        <attr name="number_size" format="dimension" />
+        <!--&lt;!&ndash;如果这里是true的话，外环就用颜色数组来绘制了&ndash;&gt;-->
+        <attr name="isColorful" format="boolean" />
+    </declare-styleable>
+</resources>

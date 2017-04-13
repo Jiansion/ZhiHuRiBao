@@ -1,10 +1,18 @@
 package com.qianjia.zhihuribao.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.qianjia.zhihuribao.util.progress.ProgressModelLoder;
+import com.qianjia.zhihuribao.widget.ProgressImageView;
 import com.youth.banner.loader.ImageLoader;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Jiansion on 2017/3/14.
@@ -22,7 +30,10 @@ public class GlideImageLoader extends ImageLoader {
          */
 
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).into(imageView);
+        Glide.with(context)
+//                .using(new ProgressModelLoder(new ProgressHandler((Activity) context, imageView)))
+                .load(path)
+                .into(imageView);
 
         //Picasso 加载图片简单用法
 //        Picasso.with(context).load(path).into(imageView);
@@ -32,11 +43,38 @@ public class GlideImageLoader extends ImageLoader {
 //        imageView.setImageURI(uri);
     }
 
-//    //提供createImageView 方法，如果不用可以不重写这个方法，主要是方便自定义ImageView的创建
+    //    //提供createImageView 方法，如果不用可以不重写这个方法，主要是方便自定义ImageView的创建
 //    @Override
 //    public ImageView createImageView(Context context) {
 //        //使用fresco，需要创建它提供的ImageView，当然你也可以用自己自定义的具有图片加载功能的ImageView
 //        SimpleDraweeView simpleDraweeView=new SimpleDraweeView(context);
 //        return simpleDraweeView;
 //    }
+    private static class ProgressHandler extends Handler {
+
+        private final WeakReference<Activity> mActivity;
+        private final ProgressImageView mProgressImageView;
+
+        public ProgressHandler(Activity activity, ProgressImageView progressImageView) {
+            super(Looper.getMainLooper());
+            mActivity = new WeakReference<>(activity);
+            mProgressImageView = progressImageView;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            final Activity activity = mActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case 1:
+                        int percent = msg.arg1 * 100 / msg.arg2;
+                        mProgressImageView.setProgressBar(percent);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 }

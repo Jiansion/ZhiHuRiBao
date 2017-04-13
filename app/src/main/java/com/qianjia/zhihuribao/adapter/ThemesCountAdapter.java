@@ -60,7 +60,7 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
             holder.imagePosterLayout.setVisibility(View.GONE);
         } else {
             holder.imagePosterLayout.setVisibility(View.VISIBLE);
-            ImageLoaderUtil.loadImage(mContext, images.get(0), holder.imPoster);
+            ImageLoaderUtil.loadThumbnail(mContext, images.get(0), holder.imPoster);
         }
 
         holder.tvTitle.setText(title);
