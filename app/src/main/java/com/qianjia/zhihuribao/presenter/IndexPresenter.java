@@ -1,13 +1,11 @@
 package com.qianjia.zhihuribao.presenter;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.qianjia.basemodel.listener.ModelCallBack;
 import com.qianjia.basemodel.view.BaseView;
-import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.zhihuribao.bean.IndexList;
-import com.qianjia.zhihuribao.model.RetrofitHelp;
+import com.qianjia.zhihuribao.model.ZhiHuRequest;
 
 /**
  * Created by Jiansion on 2017/3/14.
@@ -23,9 +21,9 @@ public class IndexPresenter implements ModelCallBack<IndexList> {
 
     public void requestIndexData(@Nullable String date) {
         if (view != null && date == null) {
-            RetrofitHelp.getZhiHuData(this);
+            ZhiHuRequest.getZhiHuData(this);
         } else if (view != null) {
-            RetrofitHelp.getZhiHuData(date, this);
+            ZhiHuRequest.getZhiHuData(date, this);
         }
     }
 

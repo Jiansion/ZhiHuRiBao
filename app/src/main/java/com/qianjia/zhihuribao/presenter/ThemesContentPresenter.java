@@ -3,7 +3,7 @@ package com.qianjia.zhihuribao.presenter;
 import com.qianjia.basemodel.listener.ModelCallBack;
 import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.bean.ThemesCount;
-import com.qianjia.zhihuribao.model.RetrofitHelp;
+import com.qianjia.zhihuribao.model.ZhiHuRequest;
 
 /**
  * Created by Jiansion on 2017/3/20.
@@ -21,9 +21,9 @@ public class ThemesContentPresenter implements ModelCallBack<ThemesCount> {
     public void onGetThemeCount(int id, int lastItemId) {
         if (view != null)
             if (lastItemId == 0) {
-                RetrofitHelp.getThemesContent(id, this);
+                ZhiHuRequest.getThemesContent(id, this);
             } else {
-                RetrofitHelp.getThemesCoutent(id, lastItemId, this);
+                ZhiHuRequest.getThemesCountent(id, lastItemId, this);
             }
     }
 

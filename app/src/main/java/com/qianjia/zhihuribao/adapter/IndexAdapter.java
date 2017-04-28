@@ -106,7 +106,7 @@ public class IndexAdapter extends RecyclerView.Adapter {
                 int type = storiesBean.getType();
                 int id = storiesBean.getId();
                 if (type == 0) {
-                    DetailDefaultActivity.onToDetailPage(context, id, contentHolder.mCardView);
+                    DetailDefaultActivity.onToDetailPage(context, id, contentHolder.imPoster);
                 } else {
                     DetailOtherActivity.onToDetailPage(context, id, type);
                 }

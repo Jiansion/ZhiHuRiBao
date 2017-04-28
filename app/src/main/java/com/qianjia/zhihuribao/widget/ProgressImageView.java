@@ -45,7 +45,7 @@ public class ProgressImageView extends RelativeLayout {
      *
      * @param progressBar
      */
-    public void setProgressBar(int progressBar) {
+    public void setProgress(int progressBar) {
         circleProgressBar.setProgress(progressBar);
     }
 

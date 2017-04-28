@@ -14,11 +14,10 @@ import okio.Source;
  * Created by Jiansion on 2017/4/13.
  */
 
-public class ProgressResponseBody extends ResponseBody {
+class ProgressResponseBody extends ResponseBody {
 
-    private ResponseBody responseBody;
-
-    private ProgressListener progressListener;
+    private final ResponseBody responseBody;
+    private final ProgressListener progressListener;
     private BufferedSource bufferedSource;
 
     public ProgressResponseBody(ResponseBody responseBody, ProgressListener progressListener) {
@@ -46,14 +45,14 @@ public class ProgressResponseBody extends ResponseBody {
 
     private Source source(Source source) {
         return new ForwardingSource(source) {
-            long totalBytesRead = 0;
+            long totalBytesRead = 0L;
 
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
+                // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                if (progressListener != null)
-                    progressListener.progress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+                progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
                 return bytesRead;
             }
         };

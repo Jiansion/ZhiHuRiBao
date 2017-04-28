@@ -3,7 +3,7 @@ package com.qianjia.zhihuribao.presenter;
 import com.qianjia.basemodel.listener.ModelCallBack;
 import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.bean.Theme;
-import com.qianjia.zhihuribao.model.RetrofitHelp;
+import com.qianjia.zhihuribao.model.ZhiHuRequest;
 
 /**
  * Created by Jiansion on 2017/3/20.
@@ -19,7 +19,7 @@ public class ThemesPresenter implements ModelCallBack<Theme> {
 
     public void onGetThemes() {
         if (view != null)
-            RetrofitHelp.getThemesList(this);
+            ZhiHuRequest.getThemesList(this);
 
     }
 

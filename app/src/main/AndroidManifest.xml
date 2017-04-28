@@ -3,6 +3,8 @@
     package="com.qianjia.zhihuribao">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".App"
@@ -12,18 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activity.MainActivity">
-
-        </activity>
-
-
-        <activity android:name=".ui.activity.DetailDefaultActivity" />
-        <activity android:name=".ui.activity.DetailOtherActivity" />
-        <activity android:name=".ui.activity.ImageActvity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.activity.DetailDefaultActivity" />
+        <activity android:name=".ui.activity.DetailOtherActivity" />
+        <activity android:name=".ui.activity.ImageActvity">
+
         </activity>
     </application>
 

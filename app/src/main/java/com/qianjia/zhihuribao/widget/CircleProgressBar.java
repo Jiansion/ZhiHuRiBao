@@ -87,7 +87,7 @@ public class CircleProgressBar extends View {
         borderWidth = typedArray.getDimension(R.styleable.CircleProgressBar_border_width, Utils.dp2px(context, 3));
         unReachedColor = typedArray.getColor(R.styleable.CircleProgressBar_unreached_color, Color.parseColor("#87CEFA"));
         reachedColor = typedArray.getColor(R.styleable.CircleProgressBar_reached_color, Color.parseColor("#FF0000"));
-        numberColor = typedArray.getColor(R.styleable.CircleProgressBar_number_corlor, Color.parseColor("#DC143C"));
+        numberColor = typedArray.getColor(R.styleable.CircleProgressBar_number_corlor, Color.parseColor("#FFFFFF"));
         numberSize = typedArray.getDimension(R.styleable.CircleProgressBar_number_size, Utils.sp2px(context, 15));
         isColorFul = typedArray.getBoolean(R.styleable.CircleProgressBar_isColorful, false);
         progress = typedArray.getInt(R.styleable.CircleProgressBar_number_progress, 0);
@@ -115,7 +115,7 @@ public class CircleProgressBar extends View {
         numPaint.setStrokeWidth(borderWidth);
 
         startNumColor = numberColor;
-        endNumColor = Color.parseColor("#FFA500");
+        endNumColor = Color.parseColor("#FFFFFF");
         arcRect = new RectF();
 
         startColorFulColor = reachedColor;
@@ -207,6 +207,11 @@ public class CircleProgressBar extends View {
         }
     }
 
+    /**
+     * 设置外环圆的宽度
+     *
+     * @param borderWidth
+     */
     public void setBorderWidth(float borderWidth) {
         this.borderWidth = borderWidth;
         unReachedPaint.setStrokeWidth(this.borderWidth);
@@ -214,18 +219,33 @@ public class CircleProgressBar extends View {
         invalidate();
     }
 
+    /**
+     * 设置默认的外环颜色
+     *
+     * @param unReachedColor
+     */
     public void setUnReachedColor(int unReachedColor) {
         this.unReachedColor = unReachedColor;
         unReachedPaint.setColor(this.unReachedColor);
         invalidate();
     }
 
+    /**
+     * 设置字体大小
+     *
+     * @param numberSize
+     */
     public void setNumberSize(float numberSize) {
         this.numberSize = numberSize;
         numPaint.setTextSize(this.numberSize);
         invalidate();
     }
 
+    /**
+     * 设置覆盖层的颜色
+     *
+     * @param isColorFul
+     */
     public void setIsColorFul(boolean isColorFul) {
         this.isColorFul = isColorFul;
         invalidate();

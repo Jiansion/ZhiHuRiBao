@@ -69,7 +69,7 @@ public class ThemesCountAdapter extends BaseRecyclerAdapter<ThemesCount.StoriesB
 
         holder.mCardView.setOnClickListener(v -> {
             if (type == 0) {
-                DetailDefaultActivity.onToDetailPage(mContext, id, holder.mCardView);
+                DetailDefaultActivity.onToDetailPage(mContext, id, holder.imPoster);
             } else {
                 DetailOtherActivity.onToDetailPage(mContext, id, type);
             }

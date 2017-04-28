@@ -1,35 +1,37 @@
 package com.qianjia.zhihuribao.api;
 
+
 import com.qianjia.zhihuribao.bean.Detail;
 import com.qianjia.zhihuribao.bean.IndexList;
 import com.qianjia.zhihuribao.bean.Theme;
 import com.qianjia.zhihuribao.bean.ThemesCount;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 /**
  * Created by Jiansion on 2017/3/6.
+ * 请求Api
  */
 
 public interface ZhiHuApi {
 
     //获取首页最新消息
     @GET("news/latest")
-    Call<IndexList> getIndexData();
+    Observable<IndexList> getIndexData();
 
     //获取首页过往消息
     @GET("news/before/{date}")
-    Call<IndexList> getIndexMoreData(@Path("date") String date);
+    Observable<IndexList> getIndexMoreData(@Path("date") String date);
 
     //获取详情
     @GET("news/{id}")
-    Call<Detail> getDetailData(@Path("id") int id);
+    Observable<Detail> getDetailData(@Path("id") int id);
 
     //获取主题栏目列表
     @GET("themes")
-    Call<Theme> getThemes();
+    Observable<Theme> getThemes();
 
     /**
      * 获取某栏目的最新内容
@@ -38,7 +40,7 @@ public interface ZhiHuApi {
      * @return
      */
     @GET("theme/{id}")
-    Call<ThemesCount> getThemesCount(@Path("id") int id);
+    Observable<ThemesCount> getThemesCount(@Path("id") int id);
 
     /**
      * 获取某栏目的过往内容
@@ -48,5 +50,5 @@ public interface ZhiHuApi {
      * @return
      */
     @GET("theme/{id}/before/{lastId}")
-    Call<ThemesCount> getThemesCount(@Path("id") int id, @Path("lastId") int lastId);
+    Observable<ThemesCount> getThemesCount(@Path("id") int id, @Path("lastId") int lastId);
 }

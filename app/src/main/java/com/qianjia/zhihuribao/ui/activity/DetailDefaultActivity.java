@@ -58,14 +58,12 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     @BindView(R.id.mProgressBar)
     ProgressBar mProgressBar;
 
-    private DetailPresenter presenter;
-
 
     public static void onToDetailPage(Context context, int id, View view) {
         Intent intent = new Intent(context, DetailDefaultActivity.class);
         intent.putExtra(DETAIL_ID, id);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, view, "tranAnima").toBundle());
+            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, view, "poster").toBundle());
         } else {
             context.startActivity(intent);
         }
@@ -117,7 +115,7 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     @Override
     protected void initData() {
         int id = getIntent().getIntExtra(DETAIL_ID, 0);
-        presenter = new DetailPresenter(this);
+        DetailPresenter presenter = new DetailPresenter(this);
         presenter.onGetDatailData(id);
     }
 

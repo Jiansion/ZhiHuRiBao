@@ -2,9 +2,8 @@ package com.qianjia.zhihuribao.presenter;
 
 import com.qianjia.basemodel.listener.ModelCallBack;
 import com.qianjia.basemodel.view.BaseView;
-import com.qianjia.basemodel.view.ProgressView;
 import com.qianjia.zhihuribao.bean.Detail;
-import com.qianjia.zhihuribao.model.RetrofitHelp;
+import com.qianjia.zhihuribao.model.ZhiHuRequest;
 
 /**
  * Created by Jiansion on 2017/3/15.
@@ -20,7 +19,7 @@ public class DetailPresenter implements ModelCallBack<Detail> {
 
     public void onGetDatailData(int id) {
         if (view != null) {
-            RetrofitHelp.getZhiHuDetail(id, this);
+            ZhiHuRequest.getZhiHuDetail(id, this);
         }
     }
 

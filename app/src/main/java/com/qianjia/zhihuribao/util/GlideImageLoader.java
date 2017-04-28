@@ -8,7 +8,6 @@ import android.os.Message;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.qianjia.zhihuribao.util.progress.ProgressModelLoder;
 import com.qianjia.zhihuribao.widget.ProgressImageView;
 import com.youth.banner.loader.ImageLoader;
 
@@ -31,7 +30,7 @@ public class GlideImageLoader extends ImageLoader {
 
         //Glide 加载图片简单用法
         Glide.with(context)
-//                .using(new ProgressModelLoder(new ProgressHandler((Activity) context, imageView)))
+//                .using(new ProgressModelLoader(new ProgressHandler((Activity) context, imageView)))
                 .load(path)
                 .into(imageView);
 
@@ -69,7 +68,7 @@ public class GlideImageLoader extends ImageLoader {
                 switch (msg.what) {
                     case 1:
                         int percent = msg.arg1 * 100 / msg.arg2;
-                        mProgressImageView.setProgressBar(percent);
+                        mProgressImageView.setProgress(percent);
                         break;
                     default:
                         break;

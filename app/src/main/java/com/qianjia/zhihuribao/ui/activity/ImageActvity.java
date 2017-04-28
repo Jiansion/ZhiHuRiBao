@@ -1,20 +1,13 @@
 package com.qianjia.zhihuribao.ui.activity;
 
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.qianjia.basemodel.util.ToastUtil;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.base.BaseActivity;
-import com.qianjia.zhihuribao.util.progress.ProgressModelLoder;
+import com.qianjia.zhihuribao.util.ImageLoaderUtil;
+import com.qianjia.zhihuribao.util.LogUtil;
+import com.qianjia.zhihuribao.util.progress.ProgressLoadListener;
 import com.qianjia.zhihuribao.widget.ProgressImageView;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -26,6 +19,7 @@ import butterknife.OnClick;
 public class ImageActvity extends BaseActivity {
     @BindView(R.id.proImage)
     ProgressImageView proImage;
+
 
     @Override
     protected int initLayoutId() {
@@ -39,48 +33,35 @@ public class ImageActvity extends BaseActivity {
 
     @OnClick(R.id.btnStart)
     public void onViewClick(View v) {
-        ToastUtil.showToast(mActivity, "下载中..");
-        Glide.with(mActivity)
-                .using(new ProgressModelLoder(new ProgressHandler(mActivity, proImage)))
-                .load("https://farm4.staticflickr.com/3854/32764887833_0a6192b336_z.jpg")
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(proImage.getImageView());
+        String url = "https://farm4.staticflickr.com/3854/32764887833_0a6192b336_z.jpg";
+        ImageLoaderUtil.loadWitheProgress(mActivity, url, proImage.getImageView(), new ProgressLoadListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                LogUtil.e("ImageActvity", "bytesRead:" + bytesRead);
+                LogUtil.e("ImageActvity", "contentLength:" + contentLength);
+//                proImage.setProgress(contentLength);
+                int progress = (int) ((bytesRead * 100) / contentLength);
+                LogUtil.e("ImageActvity", "progress:" + progress);
+                proImage.setProgress(progress);
 
-//        Glide.with(mActivity)
-//                .load("https://farm4.staticflickr.com/3854/32764887833_0a6192b336_z.jpg")
+            }
+
+            @Override
+            public void onException() {
+
+            }
+
+            @Override
+            public void onResourceReady() {
+                LogUtil.e("ImageActvity", "onResourceReady");
+            }
+        });
+
     }
 
     @Override
     protected void initData() {
-
     }
 
-    private static class ProgressHandler extends Handler {
-
-        private final WeakReference<Activity> mActivity;
-        private final ProgressImageView mProgressImageView;
-
-        ProgressHandler(Activity activity, ProgressImageView progressImageView) {
-            super(Looper.getMainLooper());
-            mActivity = new WeakReference<>(activity);
-            mProgressImageView = progressImageView;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            final Activity activity = mActivity.get();
-            if (activity != null) {
-                switch (msg.what) {
-                    case 1:
-                        int percent = msg.arg1 * 100 / msg.arg2;
-                        mProgressImageView.setProgressBar(percent);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
 
 }
