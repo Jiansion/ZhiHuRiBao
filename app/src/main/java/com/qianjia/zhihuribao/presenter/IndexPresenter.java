@@ -2,43 +2,45 @@ package com.qianjia.zhihuribao.presenter;
 
 import android.support.annotation.Nullable;
 
-import com.qianjia.basemodel.listener.ModelCallBack;
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.bean.IndexList;
+import com.qianjia.zhihuribao.model.RequestListener;
 import com.qianjia.zhihuribao.model.ZhiHuRequest;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 
 /**
  * Created by Jiansion on 2017/3/14.
+ * 知乎日报首页数据
  */
 
-public class IndexPresenter implements ModelCallBack<IndexList> {
+public class IndexPresenter extends BasePresenter<BaseView<IndexList>> implements RequestListener<IndexList> {
 
-    private BaseView<IndexList> view;
 
-    public IndexPresenter(BaseView<IndexList> view) {
-        this.view = view;
+    public IndexPresenter(BaseView<IndexList> mView) {
+        super(mView);
     }
 
+
     public void requestIndexData(@Nullable String date) {
-        if (view != null && date == null) {
+        if (mView != null && date == null) {
             ZhiHuRequest.getZhiHuData(this);
-        } else if (view != null) {
+        } else if (mView != null) {
             ZhiHuRequest.getZhiHuData(date, this);
         }
     }
 
+
     @Override
     public void onRequestSuccess(IndexList indexList) {
-        if (view != null) {
-            view.onSuccess(indexList);
+        if (indexList != null) {
+            mView.onSuccess(indexList);
+        } else {
+            mView.onFail("请求失败");
         }
 
     }
 
     @Override
-    public void onRequestError(BaseView.ErrorType type) {
-        if (view != null) {
-            view.onError(type);
-        }
+    public void onRequestFail(String msg) {
+        mView.onFail(msg);
     }
 }

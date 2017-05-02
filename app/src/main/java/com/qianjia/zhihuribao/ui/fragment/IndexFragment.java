@@ -5,8 +5,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.qianjia.basemodel.util.ToastUtil;
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.statuslayout.StatusLayout;
 import com.qianjia.swiperefresh.SwipeRefreshLayout;
 import com.qianjia.zhihuribao.R;
@@ -16,7 +14,9 @@ import com.qianjia.zhihuribao.bean.IndexList;
 import com.qianjia.zhihuribao.presenter.IndexPresenter;
 import com.qianjia.zhihuribao.ui.activity.DetailDefaultActivity;
 import com.qianjia.zhihuribao.ui.activity.DetailOtherActivity;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 import com.qianjia.zhihuribao.util.GlideImageLoader;
+import com.qianjia.zhihuribao.util.LogUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
@@ -31,6 +31,7 @@ import butterknife.BindView;
  */
 
 public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
+    private static final String TAG = IndexFragment.class.getSimpleName();
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
     @BindView(R.id.mSwipeRefresh)
@@ -102,13 +103,21 @@ public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detach();
+    }
+
+    @Override
     public void onSuccess(IndexList indexList) {
         data = indexList.getDate();
         List<IndexList.TopStoriesBean> top_stories = indexList.getTop_stories();
         List<IndexList.StoriesBean> stories = indexList.getStories();
         if (top_stories != null) {
+            LogUtil.e(TAG, "load first data");
             setFirstPage(top_stories, stories);
         } else {
+            LogUtil.e(TAG, "load another data");
             int itemCount = adapter.getItemCount();
             adapter.addItems(stories);
             mRecyclerView.scrollToPosition(itemCount);
@@ -118,6 +127,16 @@ public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
         mSwipeRefresh.setPullUpRefreshing(false);
 
 
+    }
+
+    @Override
+    public void onFail(String msg) {
+        mSwipeRefresh.setRefreshing(false);
+        mSwipeRefresh.setPullUpRefreshing(false);
+        mStatusLayout.showError(msg, v -> {
+            mStatusLayout.showLoading();
+            presenter.requestIndexData(null);
+        });
     }
 
     private void setFirstPage(List<IndexList.TopStoriesBean> top_stories, List<IndexList.StoriesBean> stories) {
@@ -147,26 +166,5 @@ public class IndexFragment extends BaseFragment implements BaseView<IndexList> {
         });
     }
 
-    @Override
-    public void onError(ErrorType type) {
-        mSwipeRefresh.setRefreshing(false);
-        mSwipeRefresh.setPullUpRefreshing(false);
 
-        if (TextUtils.isEmpty(data)) {
-            mStatusLayout.showError(type == ErrorType.NETERROR ? "发生网络异常" : "发生未知错误", v -> {
-                mStatusLayout.showLoading();
-                presenter.requestIndexData(null);
-            });
-        } else {
-            switch (type) {
-                case NETERROR:
-                    ToastUtil.showToast(mActivity, "网络异常");
-                    break;
-                case EXCEPTION:
-                    ToastUtil.showToast(mActivity, "异常");
-                    break;
-            }
-        }
-
-    }
 }

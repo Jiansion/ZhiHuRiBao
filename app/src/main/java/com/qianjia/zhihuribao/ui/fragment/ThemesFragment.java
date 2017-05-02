@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.qianjia.basemodel.util.ToastUtil;
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.statuslayout.StatusLayout;
 import com.qianjia.swiperefresh.SwipeRefreshLayout;
 import com.qianjia.zhihuribao.R;
@@ -16,7 +14,9 @@ import com.qianjia.zhihuribao.adapter.ThemesCountAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
 import com.qianjia.zhihuribao.bean.ThemesCount;
 import com.qianjia.zhihuribao.presenter.ThemesContentPresenter;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 import com.qianjia.zhihuribao.util.ImageLoaderUtil;
+import com.qianjia.zhihuribao.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,9 +104,9 @@ public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount
         presenter = new ThemesContentPresenter(this);
         presenter.onGetThemeCount(id, 0);
 
-        adapter = new ThemesCountAdapter(mActivity, new ArrayList<>());
+        adapter = new ThemesCountAdapter(new ArrayList<>());
         mRecyclerView.setAdapter(adapter);
-        adapter.setHeadView(heardView);
+        adapter.setHeaderView(heardView);
 
     }
 
@@ -122,10 +122,10 @@ public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount
             String description = themesCount.getDescription();
             tvCaption.setText(description);
             mStatusLayout.showContent();
-            adapter.updateItems(stories);
+            adapter.setNewData(stories);
         } else {
             int itemCount = adapter.getItemCount();
-            adapter.addItems(stories);
+            adapter.addData(stories);
             mRecyclerView.scrollToPosition(itemCount);
         }
 
@@ -134,7 +134,7 @@ public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount
     }
 
     @Override
-    public void onError(ErrorType type) {
+    public void onFail(String string) {
         mSwipeRefresh.setRefreshing(false);
         mSwipeRefresh.setPullUpRefreshing(false);
         if (lastItemId == 0) {
@@ -143,8 +143,9 @@ public class ThemesFragment extends BaseFragment implements BaseView<ThemesCount
                 presenter.onGetThemeCount(id, lastItemId);
             });
         } else {
-            ToastUtil.showToast(mActivity, "网络异常");
+            ToastUtil.showToast(string);
         }
     }
+
 
 }

@@ -13,11 +13,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.base.BaseActivity;
 import com.qianjia.zhihuribao.bean.Detail;
 import com.qianjia.zhihuribao.presenter.DetailPresenter;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 import com.qianjia.zhihuribao.util.ConvertHtml;
 
 import butterknife.BindView;
@@ -105,7 +105,7 @@ public class DetailOtherActivity extends BaseActivity implements BaseView<Detail
         int id = getIntent().getIntExtra(DETAIL_ID, 0);
         type = getIntent().getIntExtra(DETAIL_TYPE, 1);
         presenter = new DetailPresenter(this);
-        presenter.onGetDatailData(id);
+        presenter.onGetDetailData(id);
 
     }
 
@@ -121,9 +121,10 @@ public class DetailOtherActivity extends BaseActivity implements BaseView<Detail
     }
 
     @Override
-    public void onError(ErrorType type) {
+    public void onFail(String string) {
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -19,13 +19,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.base.BaseActivity;
 import com.qianjia.zhihuribao.bean.Detail;
 import com.qianjia.zhihuribao.presenter.DetailPresenter;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 import com.qianjia.zhihuribao.util.ConvertHtml;
 import com.qianjia.zhihuribao.util.ImageLoaderUtil;
+import com.qianjia.zhihuribao.util.ToastUtil;
 
 import butterknife.BindView;
 
@@ -36,7 +37,6 @@ import butterknife.BindView;
 
 public class DetailDefaultActivity extends BaseActivity implements BaseView<Detail> {
     private static final String DETAIL_ID = "detail_id";
-    private static final String TAG = DetailDefaultActivity.class.getSimpleName();
     @BindView(R.id.imPoster)
     ImageView imPoster;
 
@@ -116,7 +116,7 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     protected void initData() {
         int id = getIntent().getIntExtra(DETAIL_ID, 0);
         DetailPresenter presenter = new DetailPresenter(this);
-        presenter.onGetDatailData(id);
+        presenter.onGetDetailData(id);
     }
 
 
@@ -137,15 +137,15 @@ public class DetailDefaultActivity extends BaseActivity implements BaseView<Deta
     }
 
     @Override
-    public void onError(ErrorType type) {
-
+    public void onFail(String string) {
+        ToastUtil.showToast(string);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                finish();
                 onBackPressed();
                 break;
         }

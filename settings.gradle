@@ -1,1 +1,1 @@
-include ':app', ':basemodel', ':statuslayout'
+include ':app', ':statuslayout'

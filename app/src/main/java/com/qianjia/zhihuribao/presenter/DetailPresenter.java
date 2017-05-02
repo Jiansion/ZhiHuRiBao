@@ -1,39 +1,39 @@
 package com.qianjia.zhihuribao.presenter;
 
-import com.qianjia.basemodel.listener.ModelCallBack;
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.bean.Detail;
+import com.qianjia.zhihuribao.model.RequestListener;
 import com.qianjia.zhihuribao.model.ZhiHuRequest;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 
 /**
  * Created by Jiansion on 2017/3/15.
  */
 
-public class DetailPresenter implements ModelCallBack<Detail> {
+public class DetailPresenter extends BasePresenter<BaseView<Detail>> implements RequestListener<Detail> {
 
-    private BaseView<Detail> view;
 
-    public DetailPresenter(BaseView<Detail> view) {
-        this.view = view;
+    public DetailPresenter(BaseView<Detail> mView) {
+        super(mView);
     }
 
-    public void onGetDatailData(int id) {
-        if (view != null) {
+    public void onGetDetailData(int id) {
+        if (mView != null) {
             ZhiHuRequest.getZhiHuDetail(id, this);
         }
     }
 
     @Override
     public void onRequestSuccess(Detail detail) {
-        if (view != null) {
-            view.onSuccess(detail);
+        if (mView != null) {
+            mView.onSuccess(detail);
         }
+
     }
 
     @Override
-    public void onRequestError(BaseView.ErrorType type) {
-        if (view != null) {
-            view.onError(type);
+    public void onRequestFail(String msg) {
+        if (mView != null) {
+            mView.onFail(msg);
         }
     }
 }

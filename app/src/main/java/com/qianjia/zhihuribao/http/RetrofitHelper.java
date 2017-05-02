@@ -30,6 +30,7 @@ public class RetrofitHelper {
                 .addInterceptor(new CustomCacheInterceptor())
                 .cache(cache)
                 .build();
+
         return client;
     }
 

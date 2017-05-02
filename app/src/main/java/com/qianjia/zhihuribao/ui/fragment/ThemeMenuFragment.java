@@ -5,14 +5,15 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.qianjia.basemodel.view.BaseView;
 import com.qianjia.zhihuribao.R;
 import com.qianjia.zhihuribao.adapter.ThemesMenuAdapter;
 import com.qianjia.zhihuribao.base.BaseFragment;
 import com.qianjia.zhihuribao.bean.Theme;
 import com.qianjia.zhihuribao.presenter.ThemesPresenter;
 import com.qianjia.zhihuribao.ui.activity.MainActivity;
+import com.qianjia.zhihuribao.ui.view.BaseView;
 import com.qianjia.zhihuribao.util.LogUtil;
+import com.qianjia.zhihuribao.util.ToastUtil;
 
 import butterknife.BindView;
 
@@ -89,9 +90,9 @@ public class ThemeMenuFragment extends BaseFragment implements BaseView<Theme> {
     }
 
     @Override
-    public void onError(ErrorType type) {
+    public void onFail(String string) {
+        ToastUtil.showToast(string);
     }
-
 
     public interface ItemSelectListener {
         void onItemSelectListener(int id, String title);
